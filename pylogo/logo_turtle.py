@@ -29,45 +29,45 @@ def setup(func, *aliases, **kw):
 setup.logoHide = True
 
 def forward(interp, v):
-    interp.app.addCommand(cur(interp).forward, v)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).forward, v)
+    interp.addCommand(canvas.update)
 setup(forward, 'fd')
 
 def backward(interp, v):
-    interp.app.addCommand(cur(interp).backward, v)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).backward, v)
+    interp.addCommand(canvas.update)
 setup(backward, 'back', 'bk')
 
 def left(interp, v):
-    interp.app.addCommand(cur(interp).left, v)
+    interp.addCommand(cur(interp).left, v)
 setup(left, 'lt')
 
 def right(interp, v):
-    interp.app.addCommand(cur(interp).right, v)
+    interp.addCommand(cur(interp).right, v)
 setup(right, 'rt')
 
 def penup(interp):
-    interp.app.addCommand(cur(interp).up)
+    interp.addCommand(cur(interp).up)
 setup(penup, 'pu', 'penup')
 
 def pendown(interp):
-    interp.app.addCommand(cur(interp).down)
+    interp.addCommand(cur(interp).down)
 setup(pendown, 'pd', 'pendown')
 
 def penwidth(interp, v):
-    interp.app.addCommand(cur(interp).width, v)
+    interp.addCommand(cur(interp).width, v)
 setup(penwidth)
 
 def pencolor(interp, *args):
-    interp.app.addCommand(cur(interp).color, *args)
+    interp.addCommand(cur(interp).color, *args)
 setup(pencolor, 'pc', 'color', arity=1)
 
 def hideturtle(interp):
-    interp.app.addCommand(cur(interp).tracer, 0)
+    interp.addCommand(cur(interp).tracer, 0)
 setup(hideturtle, 'ht')
 
 def showturtle(interp):
-    interp.app.addCommand(cur(interp).tracer, 1)
+    interp.addCommand(cur(interp).tracer, 1)
 setup(showturtle, 'st')
 
 
@@ -76,34 +76,34 @@ def turtlewrite(interp, text, move=False):
         text = ' '.join(map(str, text))
     else:
         text = str(text)
-    interp.app.addCommand(cur(interp).write, text, move)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).write, text, move)
+    interp.addCommand(canvas.update)
 setup(turtlewrite, 'turtleprint', 'turtlepr', arity=1)
 
 def startfill(interp):
-    interp.app.addCommand(cur(interp).fill, 1)
+    interp.addCommand(cur(interp).fill, 1)
 setup(startfill)
 
 def endfill(interp):
-    interp.app.addCommand(cur(interp).fill, 0)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).fill, 0)
+    interp.addCommand(canvas.update)
 setup(endfill)
 
 def setxy(interp, x, y):
-    interp.app.addCommand(cur(interp).goto, x, y)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).goto, x, y)
+    interp.addCommand(canvas.update)
 setup(setxy)
 
 def setx(interp, x):
     t = cur(interp)
-    interp.app.addCommand(t.goto, x, t.position()[1])
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(t.goto, x, t.position()[1])
+    interp.addCommand(canvas.update)
 setup(setx)
 
 def sety(interp, y):
     t = cur(interp)
-    interp.app.addCommand(t.goto, t.position()[0], y)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(t.goto, t.position()[0], y)
+    interp.addCommand(canvas.update)
 setup(sety)
 
 def posx(interp):
@@ -119,19 +119,19 @@ def heading(interp):
 setup(heading)
 
 def setheading(interp, v):
-    interp.app.addCommand(cur(interp).setheading, v)
+    interp.addCommand(cur(interp).setheading, v)
 setup(setheading)
 
 def home(interp):
-    interp.app.addCommand(cur(interp).setheading, 0)
-    interp.app.addCommand(cur(interp).goto, 0, 0)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).setheading, 0)
+    interp.addCommand(cur(interp).goto, 0, 0)
+    interp.addCommand(canvas.update)
 setup(home)
 
 def clear(interp):
     home(inter)
-    interp.app.addCommand(cur(interp).clear)
-    interp.app.addCommand(canvas.update)
+    interp.addCommand(cur(interp).clear)
+    interp.addCommand(canvas.update)
 setup(clear, 'cs', 'clearscreen')
 
 def distance(interp, other, orig=None):

@@ -428,7 +428,6 @@ class Interpreter:
         allows special functions, like IF or WHILE, to manipulate the
         interpreter.
         """
-        print "Applying: %s(%s)" % (func, args)
         if getattr(func, 'logoAware', 0):
             return func(self, *args)
         else:
@@ -740,6 +739,9 @@ class RootFrame(Interpreter):
         raise LogoSyntaxError(
             "You can only use LOCAL in a function (TO).")
 
+    def addCommand(self, func, *args, **kw):
+        return self.app.addCommand(func, *args, **kw)
+
 class Frame(RootFrame):
 
     """
@@ -830,6 +832,9 @@ class Frame(RootFrame):
 
     def setVariableLocal(self, v, value):
         self.vars[v.lower()] = value
+
+    def addCommand(self, func, *args, **kw):
+        return self.root.addCommand(func, *args, **kw)
 
 RootFrame.Frame = Frame
 
