@@ -1,2 +1,2 @@
-from interpreter import Logo
+from pylogo.interpreter import Logo
 

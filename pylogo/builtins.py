@@ -23,8 +23,8 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from common import *
-from reader import ListTokenizer
+from pylogo.common import *
+from pylogo.reader import ListTokenizer
 
 class NoDefault:
     pass
@@ -1955,5 +1955,5 @@ def logoNew(interp, cls):
 logoNew.logoAware = True
 logoNew.logoName = 'new'
 
-def builtins_main(interp):
-    logoImport(interp, 'logo_turtle')
+#def builtins_main(interp):
+#    logoImport(interp, 'pylogo.logo_turtle')

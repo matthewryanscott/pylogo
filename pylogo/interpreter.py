@@ -7,9 +7,9 @@ A Logo interpreter.
 
 
 from types import *
-import reader
+from pylogo import reader
 import inspect, os, sys
-from common import *
+from pylogo.common import *
 import imp
 
 class Interpreter:
@@ -858,7 +858,7 @@ def loadModule(name, path=None):
 
 # Logo is the root, global interpreter object:
 Logo = RootFrame()
-import builtins
+from pylogo import builtins
 Logo.importModule(builtins)
 #if os.path.exists('init.logo'):
 #    Logo.importLogo('init.logo')

@@ -1,7 +1,7 @@
 import Tkinter
 import Pmw
 import threading
-import reader
+from pylogo import reader
 from Queue import Queue, Empty
 
 root = Pmw.initialise()
@@ -189,19 +189,22 @@ class LogoCommunicator:
 
 #import oointerp
 #oointerp.install()
-import interpreter
+from pylogo import interpreter
 
-if __name__ == '__main__':
-
+def main():
+    import sys
+    from pylogo import logo_turtle
     TheApp = IDE(root)
     TheApp.input.component('entry').focus_force()
     comm = LogoCommunicator(TheApp, interpreter.Logo)
-    import sys
     sys.stdout = comm
-    import logo_turtle
+    interpreter.Logo.importModule(logo_turtle)
     logo_turtle.logo_turtle_main(interpreter.Logo)
     logo_turtle._newmainturtle(interpreter.Logo)
     
     comm.start()
     
     root.mainloop()
+
+if __name__ == '__main__':
+    main()

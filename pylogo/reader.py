@@ -27,7 +27,7 @@ from __future__ import generators
 
 import re
 import sys
-from common import *
+from pylogo.common import *
 # Just importing this enables readline when doing raw_input:
 import readline
 
