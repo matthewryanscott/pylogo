@@ -28,6 +28,8 @@ from __future__ import generators
 import re
 import sys
 from common import *
+# Just importing this enables readline when doing raw_input:
+import readline
 
 wordMatcher = r'[a-zA-Z\._\?!][a-zA-Z0-9\._\?!]*'
 wordRE = re.compile(wordMatcher)
@@ -234,7 +236,13 @@ class TrackingStream:
     def readline(self):
         self.row += 1
         self.col = 0
-        l = self.file.readline()
+        if self.file is sys.stdin:
+            try:
+                l = raw_input() + '\n'
+            except EOFError:
+                l = ''
+        else:
+            l = self.file.readline()
         self.savedLines.insert(0, l)
         if len(self.savedLines) > self.maxSavedLines:
             del self.savedLines[self.maxSavedLines:]
