@@ -28,7 +28,6 @@ An interpreter for the Logo educational programming language.
       url="http://pylogo.sf.net",
       license="PSF",
       packages=["pylogo"],
-      package_dir={'pylogo': 'src'},
       scripts=['scripts/pylogo'],
       download_url="http://prdownloads.sourceforge.net/pylogo/PyLogo-0.1.tar.gz?download",
       )
