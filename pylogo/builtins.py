@@ -18,6 +18,10 @@ All missing functions are noted in comments and marked with '@@'
 import os, random, sys
 import operator, math, time
 import threading
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 from common import *
 from reader import ListTokenizer
@@ -56,7 +60,7 @@ logoList.arity = 2
 
 def logoRepr(arg):
     if isinstance(arg, list):
-        return '[%s]' % ' '.join(map(logoSoftRepr, arg))
+        return '[%s]' % _join(map(logoSoftRepr, arg))
     elif isinstance(arg, str):
         return '"%s' % arg
     else:
@@ -71,6 +75,23 @@ def logoSoftRepr(arg):
         return arg
     else:
         return logoRepr(arg)
+
+def _join(args):
+    """
+    Join the arguments with spaces, except newlines which don't
+    need to be padded.
+    """
+    result = StringIO()
+    skipSpace = True
+    for arg in args:
+        if skipSpace:
+            skipSpace = False
+        else:
+            result.write(' ')
+        if arg == '\n':
+            skipSpace = True
+        result.write(arg)
+    return result.getvalue()
 
 def logoStr(arg):
     if isinstance(arg, list):
@@ -575,7 +596,7 @@ def pr(*args):
     trans = []
     for arg in args:
         if isinstance(arg, list):
-            trans.append(' '.join(map(logoSoftRepr, arg)))
+            trans.append(_join(map(logoSoftRepr, arg)))
         else:
             trans.append(logoSoftRepr(arg))
     print ' '.join(trans)
