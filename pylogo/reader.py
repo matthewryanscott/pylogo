@@ -2,7 +2,20 @@
 reader for pylogo
   Ian Bicking <ianb@colorstudy.com>
 
-Tokenizer/lexer.
+Tokenizer/lexer.  Examples:
+
+    >>> tokenize('1 2 3')
+    [1, 2, 3, '\\n']
+    >>> tokenize('fd 100')
+    ['fd', 100, '\\n']
+    >>> tokenize('pr \"hello\\nfd 100\\n')
+    ['pr', '\"', 'hello', '\\n', 'fd', 100, '\\n']
+    >>> tokenize('while [:a>2] [make :a :a+1]')
+    ['while', '[', ':', 'a', '>', 2, ']', '[', 'make', ':', 'a', ':', 'a', '+', 1, ']', '\\n']
+
+Note that every file fed in is expected to end with a '\\n' (even if
+the file doesn't actually).  We get common.EOF from the tokenizer when
+it is done.
 """
 
 
@@ -126,6 +139,7 @@ class FileTokenizer:
                             yield float(n)
                         except ValueError:
                             raise LogoSyntaxError(self.file, 'Not a number: %s' % repr(n))
+                    continue
                 if c in symbols:
                     self.file.col += 1
                     yield c
@@ -226,6 +240,18 @@ class TrackingStream:
         s = repr(self.file)[:-1]
         return '%s %s:%s>' % (s, self.row, self.col)
                 
+def tokenize(s):
+    from StringIO import StringIO
+    input = StringIO(s)
+    input.name = '<string>'
+    tok = FileTokenizer(TrackingStream(input))
+    result = []
+    while 1:
+        t = tok.next()
+        if t is EOF:
+            break
+        result.append(t)
+    return result
         
 def main():
     import sys

@@ -1,12 +1,14 @@
 class LogoError(Exception):
 
     """
-    A generic Logo error.  It tracks file position and someday a
-    bit of the (Logo) traceback.
+    A generic Logo error.  It tracks file position and some
+    of the (Logo) traceback.
     """
 
     def __init__(self, *args, **kw):
         Exception.__init__(self, *args)
+        # We don't always get the tokenizer immediately,
+        # but sometimes we do...
         if kw.has_key('tokenizer'):
             tokenizer = kw['tokenizer']
             del kw['tokenizer']
@@ -177,9 +179,6 @@ class LogoList(list):
             body = []
         list.__init__(self, body)
         self.file = sourceFile
-
-    def __repr__(self):
-        return '[%s]' % ' '.join(map(str, self))
 
 class LogoControl(Exception):
     pass

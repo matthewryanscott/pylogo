@@ -3,7 +3,7 @@ builtins for pylogo
   Ian Bicking <ianb@colorstudy.com>
 
 These implement the builtins, as much as possible using the standard
-library of UCBLogo:
+library of UCBLogo as a model:
   http://www.cs.berkeley.edu/~bh/logo.html
 UCBLogo manual:
   http://www.cs.berkeley.edu/~bh/usermanual
@@ -63,6 +63,10 @@ def logoRepr(arg):
         return repr(arg)
 
 def logoSoftRepr(arg):
+    """
+    Like logoRepr, only we're already in a quoted context, so
+    we don't have to quote strings.
+    """
     if isinstance(arg, str):
         return arg
     else:
@@ -73,8 +77,6 @@ def logoStr(arg):
         return ' '.join(map(logoSoftRepr, arg))
     else:
         return str(arg)
-
-    q
 
 def sentence(*args):
     """
