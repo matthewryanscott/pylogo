@@ -16,15 +16,26 @@ from pylogo import Logo
 
 def main(args):
     quit_after = False
+    use_ide = True
     for filename in sys.argv[1:]:
         if filename in ('-q', '--quit'):
             quit_after = True
             continue
+        if filename in ('-c', '--console'):
+            use_ide = False
+            continue
+        if filename == '-h':
+            print "Usage: pylogo [OPTIONS] [FILES]"
+            print "  -q or --quit     quit after loading and running files"
+            print "  -c or --console  run the interpreter in the console (not the GUI)"
+            sys.exit()
         Logo.importLogo(filename)
 
     if not quit_after:
-        from pylogo import ide
-        ide.main()
-        #Logo.inputLoop(sys.stdin, sys.stdout)
+        if use_ide:
+            from pylogo import ide
+            ide.main()
+        else:
+            Logo.inputLoop(sys.stdin, sys.stdout)
 
 main(sys.argv[1:])
