@@ -129,7 +129,7 @@ def home(interp):
 setup(home)
 
 def clear(interp):
-    home(inter)
+    home(interp)
     interp.addCommand(cur(interp).clear)
     interp.addCommand(canvas.update)
 setup(clear, 'cs', 'clearscreen')
