@@ -26,6 +26,7 @@ class Interpreter:
     """
 
     specialForms = {}
+    "Methods register themselves using this dictionary"
 
     def __init__(self, tokenizer=None):
         self.tokenizers = []
@@ -109,8 +110,8 @@ class Interpreter:
         """
         while 1:
             # Strip out any comments:
-            # (typically the reader would do this, but we will leave
-            # it in here)
+            # (typically the reader would do this, but we do it more
+            # lazily so we can get the comments if we want them)
             p = self.tokenizer.peek()
             if p == ';':
                 while 1:
@@ -123,7 +124,8 @@ class Interpreter:
         while 1:
             # Check if there's any infix operators:
             p = self.tokenizer.peek()
-            if p not in ['/', '*', '+', '-', '>', '<', '=']:
+            if p not in ['/', '*', '+', '-', '>', '<', '=',
+                         '>=', '=>', '<=', '=<', '<>']:
                 break
             self.tokenizer.next()
             e = self.exprInner()
@@ -142,6 +144,12 @@ class Interpreter:
                 val = val > e
             elif p == '=':
                 val = val == e
+            elif p == '>=' or p == '=>':
+                val = val >= e
+            elif p == '<=' or p == '=<':
+                val = val <= e
+            elif p == '<>':
+                val = val != e
             else:
                 assert 0, "Unknown symbol: %s" % p
         return val
@@ -243,7 +251,7 @@ class Interpreter:
                             self.tokenizer.next()
                             continue
                         elif tok is EOF:
-                            raise LogoEndOfCode("Unexpected end of code (')' expected")
+                            raise LogoEndOfCode("Unexpected end of code (')' expected)")
                         args.append(self.expr())
                     val = self.apply(self.getFunction(func), args)
                 if not self.tokenizer.next() == ')':
@@ -263,6 +271,7 @@ class Interpreter:
                 self.tokenizer.pushContext('func')
                 try:
                     args = []
+                    # -1 arity means the function is greedy
                     if n == -1:
                         while 1:
                             tok = self.tokenizer.peek()
@@ -318,11 +327,10 @@ class Interpreter:
                 continue
             vars.append(tok)
         body = []
-        # END can only occur immediately after a newline...
+        # END can only occur immediately after a newline, so we keep track
         lastNewline = False
         while 1:
             tok = self.tokenizer.next()
-            # @@: Really this should check for a newline to come first
             if (lastNewline and isinstance(tok, str)
                 and tok.lower() == 'end'):
                 break
@@ -380,21 +388,7 @@ class Interpreter:
         except LogoStop:
             pass
         return val
-    specialForms['for'] = specialFor
-
-    def specialOutputWith(self, greedy):
-        """
-        Special OUTPUTWITH form; gets the function name and arguments,
-        but doesn't evaluate.
-        """
-        funcName = self.tokenizer.peek()
-        if funcName == '(':
-            funcGreedy = True
-            tokenizer.next()
-            funcName = tokenizer.peek()
-        else:
-            funcGreedy = False
-        
+    specialForms['for'] = specialFor        
 
     def exprList(self):
         """
@@ -434,6 +428,7 @@ class Interpreter:
         allows special functions, like IF or WHILE, to manipulate the
         interpreter.
         """
+        print "Applying: %s(%s)" % (func, args)
         if getattr(func, 'logoAware', 0):
             return func(self, *args)
         else:

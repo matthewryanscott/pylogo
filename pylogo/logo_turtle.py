@@ -3,12 +3,19 @@ import math
 import weakref
 import threading
 import sys
-try:
-    from pylogo.tkthread import addQueue
-except ImportError:
-    from src.tkthread import addQueue
 
 _allTurtles = []
+
+class Turtle:
+
+    _allTurtles = []
+
+    def __init__(self):
+        self.pen = turtle.Pen()
+        self.pen.degrees()
+        self._allTurtles.append(weakref.ref(self))
+
+    
 
 def cur(interp):
     return interp.getVariable('turtle')
@@ -22,45 +29,45 @@ def setup(func, *aliases, **kw):
 setup.logoHide = True
 
 def forward(interp, v):
-    addQueue(cur(interp).forward, v)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).forward, v)
+    interp.app.addCommand(canvas.update)
 setup(forward, 'fd')
 
 def backward(interp, v):
-    addQueue(cur(interp).backward, v)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).backward, v)
+    interp.app.addCommand(canvas.update)
 setup(backward, 'back', 'bk')
 
 def left(interp, v):
-    addQueue(cur(interp).left, v)
+    interp.app.addCommand(cur(interp).left, v)
 setup(left, 'lt')
 
 def right(interp, v):
-    addQueue(cur(interp).right, v)
+    interp.app.addCommand(cur(interp).right, v)
 setup(right, 'rt')
 
 def penup(interp):
-    addQueue(cur(interp).up)
+    interp.app.addCommand(cur(interp).up)
 setup(penup, 'pu', 'penup')
 
 def pendown(interp):
-    addQueue(cur(interp).down)
+    interp.app.addCommand(cur(interp).down)
 setup(pendown, 'pd', 'pendown')
 
 def penwidth(interp, v):
-    addQueue(cur(interp).width, v)
+    interp.app.addCommand(cur(interp).width, v)
 setup(penwidth)
 
 def pencolor(interp, *args):
-    addQueue(cur(interp).color, *args)
+    interp.app.addCommand(cur(interp).color, *args)
 setup(pencolor, 'pc', 'color', arity=1)
 
 def hideturtle(interp):
-    addQueue(cur(interp).tracer, 0)
+    interp.app.addCommand(cur(interp).tracer, 0)
 setup(hideturtle, 'ht')
 
 def showturtle(interp):
-    addQueue(cur(interp).tracer, 1)
+    interp.app.addCommand(cur(interp).tracer, 1)
 setup(showturtle, 'st')
 
 
@@ -69,34 +76,34 @@ def turtlewrite(interp, text, move=False):
         text = ' '.join(map(str, text))
     else:
         text = str(text)
-    addQueue(cur(interp).write, text, move)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).write, text, move)
+    interp.app.addCommand(canvas.update)
 setup(turtlewrite, 'turtleprint', 'turtlepr', arity=1)
 
 def startfill(interp):
-    addQueue(cur(interp).fill, 1)
+    interp.app.addCommand(cur(interp).fill, 1)
 setup(startfill)
 
 def endfill(interp):
-    addQueue(cur(interp).fill, 0)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).fill, 0)
+    interp.app.addCommand(canvas.update)
 setup(endfill)
 
 def setxy(interp, x, y):
-    addQueue(cur(interp).goto, x, y)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).goto, x, y)
+    interp.app.addCommand(canvas.update)
 setup(setxy)
 
 def setx(interp, x):
     t = cur(interp)
-    addQueue(t.goto, x, t.position()[1])
-    addQueue(canvas.update)
+    interp.app.addCommand(t.goto, x, t.position()[1])
+    interp.app.addCommand(canvas.update)
 setup(setx)
 
 def sety(interp, y):
     t = cur(interp)
-    addQueue(t.goto, t.position()[0], y)
-    addQueue(canvas.update)
+    interp.app.addCommand(t.goto, t.position()[0], y)
+    interp.app.addCommand(canvas.update)
 setup(sety)
 
 def posx(interp):
@@ -112,19 +119,19 @@ def heading(interp):
 setup(heading)
 
 def setheading(interp, v):
-    addQueue(cur(interp).setheading, v)
+    interp.app.addCommand(cur(interp).setheading, v)
 setup(setheading)
 
 def home(interp):
-    addQueue(cur(interp).setheading, 0)
-    addQueue(cur(interp).goto, 0, 0)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).setheading, 0)
+    interp.app.addCommand(cur(interp).goto, 0, 0)
+    interp.app.addCommand(canvas.update)
 setup(home)
 
 def clear(interp):
     home(inter)
-    addQueue(cur(interp).clear)
-    addQueue(canvas.update)
+    interp.app.addCommand(cur(interp).clear)
+    interp.app.addCommand(canvas.update)
 setup(clear, 'cs', 'clearscreen')
 
 def distance(interp, other, orig=None):
@@ -138,7 +145,9 @@ def allturtles():
     return [t() for t in _allTurtles if t()]
 
 def newturtle():
-    p = turtle.Pen()
+    global canvas
+    assert canvas, "A canvas must be created before newturtle() is called"
+    p = turtle.RawPen(canvas)
     p.degrees()
     _allTurtles.append(weakref.ref(p))
     return p
@@ -153,9 +162,14 @@ canvas = None
 
 def logo_turtle_main(interp):
     global canvas
+    if getattr(interp, 'canvas', None):
+        canvas = interp.canvas
+logo_turtle_main.logoAware = True
+
+def _newmainturtle(interp):
     turtle = newturtle()
     interp.setVariable('turtle', turtle)
-    canvas = turtle._canvas
+_newmainturtle.logoAware = True
 
 class LogoTurtle:
 
@@ -264,5 +278,5 @@ class LogoTurtle:
         return math.sqrt((self.position()[0]-other.position()[0])**2 +
                          (self.position()[1]-other.position()[1])**2)
 
-def logo_turtle_main(interp):
-    pass
+#def logo_turtle_main(interp):
+#    pass
