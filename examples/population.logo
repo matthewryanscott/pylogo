@@ -31,5 +31,7 @@ to try :number 0
 end
 
 to population_main
+  pr [Script running:
+try]
   try
 end
