@@ -51,6 +51,7 @@ class IDE:
 
         self.pw.pack(expand=1, fill='both')
         self.canvas = canvas = self.scroller.component('canvas')
+        self.parent.after(100, self.idleUpdates)
         #item = canvas.create_arc(5, 5, 35, 35, fill='red', extent=315)
         return
 
@@ -60,7 +61,12 @@ class IDE:
         self.input.clear()
         self.updateHistory()
         self.updateCommands()
-        return
+
+    def idleUpdates(self):
+        #print "IDLE"
+        self.updateHistory()
+        self.updateCommands()
+        self.parent.after(100, self.idleUpdates)
 
     def addHistory(self, val):
         # This should actually put some event in place, so that the
