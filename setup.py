@@ -2,6 +2,8 @@ from distutils.core import setup
 import warnings
 warnings.filterwarnings("ignore", "Unknown distribution option")
 
+__version__ = '0.2'
+
 import sys
 # patch distutils if it can't cope with the "classifiers" keyword
 if sys.version < '2.2.3':
@@ -10,7 +12,7 @@ if sys.version < '2.2.3':
     DistributionMetadata.download_url = None
 
 setup(name="PyLogo",
-      version="0.1",
+      version=__version__,
       description="Logo interpreter",
       long_description="""\
 An interpreter for the Logo educational programming language.
@@ -29,7 +31,7 @@ An interpreter for the Logo educational programming language.
       license="PSF",
       packages=["pylogo"],
       scripts=['scripts/pylogo'],
-      download_url="http://prdownloads.sourceforge.net/pylogo/PyLogo-0.1.tar.gz?download",
+      download_url="http://prdownloads.sourceforge.net/pylogo/PyLogo-%s.tar.gz?download" % __version__,
       )
 
 # Send announce to:
