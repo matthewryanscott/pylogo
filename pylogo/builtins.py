@@ -24,7 +24,7 @@ except ImportError:
     from StringIO import StringIO
 
 from pylogo.common import *
-from pylogo.reader import ListTokenizer
+from pylogo import reader
 
 class NoDefault:
     pass
