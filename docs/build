@@ -1,6 +1,4 @@
 #!/bin/sh
 
-buildhtml.py --no-toc-backlinks .
-
-cd ../../PLWeb
-./build
+echo buildhtml.py --report=2 --prune=.svn --prune=UCBManual.txt --silent --no-toc-bac
+buildhtml.py --report=2 --prune=.svn --prune=UCBManual.txt --silent --no-toc-bac
