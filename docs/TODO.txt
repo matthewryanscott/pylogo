@@ -1,0 +1,8 @@
+TODO
+====
+
+These are some things I'd like to add, sometime:
+
+* Self-recursive functions should use tail call elimination (i.e., you
+  shouldn't get a stack overflow).  Other recursion doesn't need this
+  optimization (it messes up tracebacks and other debugging).

@@ -1,0 +1,13 @@
+to squares :start :stop
+  ifelse :start < :stop [
+    output fput :start * :start squares :start + 1 :stop
+  ] [
+    output []
+  ]
+end
+
+
+to squares_main
+  print "Squares
+  print squares 1 10
+end

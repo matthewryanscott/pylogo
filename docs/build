@@ -1,0 +1,6 @@
+#!/bin/sh
+
+buildhtml.py --no-toc-backlinks .
+
+cd ../../PLWeb
+./build
