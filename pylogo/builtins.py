@@ -575,9 +575,9 @@ def pr(*args):
     trans = []
     for arg in args:
         if isinstance(arg, list):
-            trans.append(' '.join(map(repr, arg)))
+            trans.append(' '.join(map(logoSoftRepr, arg)))
         else:
-            trans.append(repr(arg))
+            trans.append(logoSoftRepr(arg))
     print ' '.join(trans)
 pr.aliases = ['print']
 pr.arity = -1

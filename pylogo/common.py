@@ -195,6 +195,8 @@ class LogoContinue(LogoControl):
 class LogoBreak(LogoControl):
     pass
 
-class EOF:
-    pass
+class _EOF:
+    def __repr__(self):
+        return '[EOF]'
 
+EOF = _EOF()

@@ -12,6 +12,10 @@ Tokenizer/lexer.  Examples:
     ['pr', '\"', 'hello', '\\n', 'fd', 100, '\\n']
     >>> tokenize('while [:a>2] [make :a :a+1]')
     ['while', '[', ':', 'a', '>', 2, ']', '[', 'make', ':', 'a', ':', 'a', '+', 1, ']', '\\n']
+    >>> tokenize('>>>= <= <><> == =>=<')
+    ['>', '>', '>=', '<=', '<>', '<>', '=', '=', '=>', '=<', '\\n']
+    >>> tokenize('apple? !apple .apple apple._me apple10 10apple')
+    ['apple?', '!apple', '.apple', 'apple._me', 'apple10', 10, 'apple', '\\n']
 
 Note that every file fed in is expected to end with a '\\n' (even if
 the file doesn't actually).  We get common.EOF from the tokenizer when
@@ -25,11 +29,12 @@ import re
 import sys
 from common import *
 
-wordMatcher = r'[a-zA-Z._][a-zA-Z0-9.?_]*'
+wordMatcher = r'[a-zA-Z\._\?!][a-zA-Z0-9\._\?!]*'
 wordRE = re.compile(wordMatcher)
 onlyWordRE = re.compile(r'^%s$' % wordMatcher)
 numberRE = re.compile(r'(?:[0-9][.0-9]*|-[0-9][0-9]*)')
-symbols = '()[]+-/*":=><.;'
+symbols = '()[]+-/*":=><;'
+extendedSymbols = ['>=', '=>', '<=', '=<', '<>']
 whiteRE = re.compile(r'[ \t\n\r]+')
 
 class FileTokenizer:
@@ -141,8 +146,12 @@ class FileTokenizer:
                             raise LogoSyntaxError(self.file, 'Not a number: %s' % repr(n))
                     continue
                 if c in symbols:
-                    self.file.col += 1
-                    yield c
+                    if cnext and c + cnext in extendedSymbols:
+                        self.file.col += 2
+                        yield c + cnext
+                    else:
+                        self.file.col += 1
+                        yield c
                 elif wordRE.match(c):
                     m = wordRE.match(l, pos=self.file.col)
                     assert m
