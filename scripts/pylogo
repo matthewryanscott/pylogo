@@ -11,11 +11,9 @@ if os.path.basename(os.path.dirname(here)) == 'scripts':
     # Then we're probably running without having been installed
     # with setup.py...
     sys.path.append(os.path.dirname(os.path.dirname(here)))
-    from src import Logo
-    from src import tkthread
-else:
-    from pylogo import Logo
-    from pylogo import tkthread
+
+from pylogo import Logo
+from pylogo import tkthread
 
 def main(args):
     quit_after = False
