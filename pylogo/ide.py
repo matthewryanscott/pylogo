@@ -17,6 +17,7 @@ class IDE:
         self.menuBar.addmenu('File', '')
         self.menuBar.addmenuitem('File', 'command', label='Exit',
                                  command=self.exit)
+        self.parent.protocol('WM_DELETE_WINDOW', self.exit)
         self.menuBar.addmenu('Help', '')
         self.menuBar.addmenuitem('Help', 'command', label='About',
                                  command=self.about)
