@@ -14,7 +14,10 @@ if os.path.basename(os.path.dirname(here)) == 'scripts':
 
 from pylogo import Logo
 
-def main(args):
+def main():
+    doit(sys.argv[1:])
+
+def doit(args):
     quit_after = False
     use_ide = True
     for filename in sys.argv[1:]:
@@ -37,5 +40,3 @@ def main(args):
             ide.main()
         else:
             Logo.inputLoop(sys.stdin, sys.stdout)
-
-main(sys.argv[1:])

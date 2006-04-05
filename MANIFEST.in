@@ -1,8 +1,0 @@
-include *.txt
-include *.html
-include *.css
-include docs/*.txt
-include docs/*.html
-include docs/*.css
-include examples/*.*logo
-include scripts/*
