@@ -31,13 +31,13 @@ from pylogo.common import *
 # Just importing this enables readline when doing raw_input:
 import readline
 
-wordMatcher = r'[a-zA-Z\._\?!][a-zA-Z0-9\._\?!]*'
-wordRE = re.compile(wordMatcher)
-onlyWordRE = re.compile(r'^%s$' % wordMatcher)
-numberRE = re.compile(r'(?:[0-9][.0-9]*|-[0-9][0-9]*)')
+word_matcher = r'[a-zA-Z\._\?!][a-zA-Z0-9\._\?!]*'
+word_re = re.compile(word_matcher)
+only_word_re = re.compile(r'^%s$' % word_matcher)
+number_re = re.compile(r'(?:[0-9][.0-9]*|-[0-9][0-9]*)')
 symbols = '()[]+-/*":=><;'
-extendedSymbols = ['>=', '=>', '<=', '=<', '<>']
-whiteRE = re.compile(r'[ \t\n\r]+')
+extended_symbols = ['>=', '=>', '<=', '=<', '<>']
+white_re = re.compile(r'[ \t\n\r]+')
 
 class FileTokenizer:
 
@@ -65,7 +65,7 @@ class FileTokenizer:
             return '<FileTokenizer %x parsing %r>' \
                    % (id(self), self.file)
 
-    def printPrompt(self):
+    def print_prompt(self):
         if not self.prompt or not self.output:
             return
         if isinstance(self.prompt, str):
@@ -80,10 +80,10 @@ class FileTokenizer:
             self.output.write(prompt)
             self.output.flush()
 
-    def pushContext(self, context):
+    def push_context(self, context):
         self.context.append(context)
 
-    def popContext(self):
+    def pop_context(self):
         self.context.pop()
 
     def next(self):
@@ -111,14 +111,14 @@ class FileTokenizer:
                 v = self.peeked[0]
                 del self.peeked[0]
                 yield v
-            self.printPrompt()
+            self.print_prompt()
             l = self.file.readline()
             while 1:
                 if self.peeked:
                     v = self.peeked[0]
                     del self.peeked[0]
                     yield v
-                m = whiteRE.match(l, pos=self.file.col)
+                m = white_re.match(l, pos=self.file.col)
                 if m:
                     self.file.col = m.end()
                 if l == '':
@@ -132,10 +132,10 @@ class FileTokenizer:
                     cnext = l[self.file.col+1]
                 except IndexError:
                     cnext = None
-                if (numberRE.match(c) or
+                if (number_re.match(c) or
                     c == '-' and
-                    cnext and numberRE.match(cnext)):
-                    m = numberRE.match(l, pos=self.file.col)
+                    cnext and number_re.match(cnext)):
+                    m = number_re.match(l, pos=self.file.col)
                     assert m
                     self.file.col = m.end()
                     n = m.group(0)
@@ -148,14 +148,14 @@ class FileTokenizer:
                             raise LogoSyntaxError(self.file, 'Not a number: %s' % repr(n))
                     continue
                 if c in symbols:
-                    if cnext and c + cnext in extendedSymbols:
+                    if cnext and c + cnext in extended_symbols:
                         self.file.col += 2
                         yield c + cnext
                     else:
                         self.file.col += 1
                         yield c
-                elif wordRE.match(c):
-                    m = wordRE.match(l, pos=self.file.col)
+                elif word_re.match(c):
+                    m = word_re.match(l, pos=self.file.col)
                     assert m
                     self.file.col = m.end()
                     yield m.group(0)
@@ -165,9 +165,9 @@ class FileTokenizer:
                     # This seems like a bad idea:
                     #raise LogoSyntaxError('Unknown character: %s' % repr(c), errorFile=self.file)
 
-def isWord(tok):
+def is_word(tok):
     if isinstance(tok, str):
-        return bool(onlyWordRE.search(tok))
+        return bool(only_word_re.search(tok))
     else:
         return False
 
@@ -195,10 +195,10 @@ class ListTokenizer:
         except:
             return '<ListTokenizer %x>' % (id(self))
 
-    def pushContext(self, context):
+    def push_context(self, context):
         pass
 
-    def popContext(self):
+    def pop_context(self):
         pass
 
     def peek(self):
@@ -225,13 +225,16 @@ class TrackingStream:
     for tracebacks.
     """
 
-    def __init__(self, file):
+    def __init__(self, file, name):
         self.file = file
         self.col = 0
         self.row = 0
         self.savedLines = []
         self.maxSavedLines = 10
-        self.name = self.file.name
+        if name is None:
+            self.name = self.file.name
+        else:
+            self.name = name
 
     def readline(self):
         self.row += 1
@@ -248,7 +251,7 @@ class TrackingStream:
             del self.savedLines[self.maxSavedLines:]
         return l
 
-    def rowLine(self, row):
+    def row_line(self, row):
         if row < self.row - len(self.savedLines):
             return None
         return self.savedLines[self.row-row]

@@ -7,10 +7,10 @@ class OOFrame(interpreter.Frame):
         interpreter.Frame.__init__(self, *args, **kw)
         self.actors = []
 
-    def pushActor(self, actor):
+    def push_actor(self, actor):
         self.actors.insert(0, actor)
 
-    def getVariable(self, v):
+    def get_variable(self, v):
         for actor in self.actors:
             try:
                 return getattr(actor, v)
@@ -21,11 +21,11 @@ class OOFrame(interpreter.Frame):
             except (AttributeError, NameError, KeyError, IndexError,
                     TypeError, ValueError):
                 pass
-        return interpreter.Frame.getVariable(self, v)
+        return interpreter.Frame.get_variable(self, v)
 
-    def setVariable(self, v, value):
+    def set_variable(self, v, value):
         # We won't set member variables for now
-        return interpreter.Frame.setVariable(self, v, value)
+        return interpreter.Frame.set_variable(self, v, value)
         for actor in self.actors:
             try:
                 prev = getattr(actor, v)
@@ -43,26 +43,26 @@ class OOFrame(interpreter.Frame):
             except (AttributeError, NameError, KeyError, IndexError,
                     TypeError, ValueError):
                 pass
-        interpreter.Frame.setVariable(self, v, value)
+        interpreter.Frame.set_variable(self, v, value)
 
-    def getFunction(self, name):
+    def get_function(self, name):
         for actor in self.actors:
             func = getattr(actor, name, None)
-            if hasattr(func, 'logoAware'):
+            if hasattr(func, 'logo_aware'):
                 return func
             if isinstance(func, (FunctionType, MethodType)):
                 return func
-        return interpreter.Frame.getFunction(self, name)
+        return interpreter.Frame.get_function(self, name)
 
+@logofunc(aware=True)
 def tell(interp, obj, block):
     interp = interp.new()
-    interp.pushActor(obj)
+    interp.push_actor(obj)
     interp.eval(block)
-tell.logoAware = True
 
 def install():
     interpreter.Logo.Frame = OOFrame
-    interpreter.Logo.importFunction(tell)
+    interpreter.Logo.import_function(tell)
 
 class Writer(object):
 

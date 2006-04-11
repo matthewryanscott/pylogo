@@ -4,6 +4,8 @@ import weakref
 import threading
 import sys
 
+from common import *
+
 _allTurtles = []
 
 class Turtle:
@@ -16,130 +18,123 @@ class Turtle:
         self._allTurtles.append(weakref.ref(self))
 
     
-
+@logofunc(hide=True)
 def cur(interp):
-    return interp.getVariable('turtle')
-cur.logoHide = True
+    return interp.get_variable('turtle')
 
-def setup(func, *aliases, **kw):
-    func.logoAware = True
-    for name, value in kw.items():
-        setattr(func, name, value)
-    func.aliases = aliases
-setup.logoHide = True
-
+@logofunc(aliases=['fd'], aware=True)
 def forward(interp, v):
-    interp.addCommand(cur(interp).forward, v)
-    interp.addCommand(canvas.update)
-setup(forward, 'fd')
+    interp.add_command(cur(interp).forward, v)
+    interp.add_command(canvas.update)
 
+@logofunc(aliases=['back', 'bk'], aware=True)
 def backward(interp, v):
-    interp.addCommand(cur(interp).backward, v)
-    interp.addCommand(canvas.update)
-setup(backward, 'back', 'bk')
+    interp.add_command(cur(interp).backward, v)
+    interp.add_command(canvas.update)
 
+@logofunc(aliases=['lt'], aware=True)
 def left(interp, v):
-    interp.addCommand(cur(interp).left, v)
-setup(left, 'lt')
+    interp.add_command(cur(interp).left, v)
 
+@logofunc(aliases=['rt'], aware=True)
 def right(interp, v):
-    interp.addCommand(cur(interp).right, v)
-setup(right, 'rt')
+    interp.add_command(cur(interp).right, v)
 
+@logofunc(aliases=['pu'], aware=True)
 def penup(interp):
-    interp.addCommand(cur(interp).up)
-setup(penup, 'pu', 'penup')
+    interp.add_command(cur(interp).up)
 
+@logofunc(aliases=['pd'], aware=True)
 def pendown(interp):
-    interp.addCommand(cur(interp).down)
-setup(pendown, 'pd', 'pendown')
+    interp.add_command(cur(interp).down)
 
+@logofunc(aware=True)
 def penwidth(interp, v):
-    interp.addCommand(cur(interp).width, v)
-setup(penwidth)
+    interp.add_command(cur(interp).width, v)
 
+@logofunc(aliases=['pc', 'color'], aware=True,
+          arity=1)
 def pencolor(interp, *args):
-    interp.addCommand(cur(interp).color, *args)
-setup(pencolor, 'pc', 'color', arity=1)
+    interp.add_command(cur(interp).color, *args)
 
+@logofunc(aliases=['ht'], aware=True)
 def hideturtle(interp):
-    interp.addCommand(cur(interp).tracer, 0)
-setup(hideturtle, 'ht')
+    interp.add_command(cur(interp).tracer, 0)
 
+@logofunc(aliases=['st'], aware=True)
 def showturtle(interp):
-    interp.addCommand(cur(interp).tracer, 1)
-setup(showturtle, 'st')
+    interp.add_command(cur(interp).tracer, 1)
 
-
+@logofunc(aliases=['turtleprint', 'turtlepr'],
+          aware=True, arity=1)
 def turtlewrite(interp, text, move=False):
     if isinstance(text, list):
         text = ' '.join(map(str, text))
     else:
         text = str(text)
-    interp.addCommand(cur(interp).write, text, move)
-    interp.addCommand(canvas.update)
-setup(turtlewrite, 'turtleprint', 'turtlepr', arity=1)
+    interp.add_command(cur(interp).write, text, move)
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True)
 def startfill(interp):
-    interp.addCommand(cur(interp).fill, 1)
-setup(startfill)
+    interp.add_command(cur(interp).fill, 1)
 
+@logofunc(aware=True)
 def endfill(interp):
-    interp.addCommand(cur(interp).fill, 0)
-    interp.addCommand(canvas.update)
-setup(endfill)
+    interp.add_command(cur(interp).fill, 0)
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True)
 def setxy(interp, x, y):
-    interp.addCommand(cur(interp).goto, x, y)
-    interp.addCommand(canvas.update)
-setup(setxy)
+    interp.add_command(cur(interp).goto, x, y)
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True)
 def setx(interp, x):
     t = cur(interp)
-    interp.addCommand(t.goto, x, t.position()[1])
-    interp.addCommand(canvas.update)
-setup(setx)
+    interp.add_command(t.goto, x, t.position()[1])
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True)
 def sety(interp, y):
     t = cur(interp)
-    interp.addCommand(t.goto, t.position()[0], y)
-    interp.addCommand(canvas.update)
-setup(sety)
+    interp.add_command(t.goto, t.position()[0], y)
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True)
 def posx(interp):
     return cur(interp).position()[0]
-setup(posx)
 
+@logofunc(aware=True)
 def posy(interp):
     return cur(interp).position()[1]
-setup(posy)
 
+@logofunc(aware=True)
 def heading(interp):
     return cur(interp).heading()
-setup(heading)
 
+@logofunc(aware=True)
 def setheading(interp, v):
-    interp.addCommand(cur(interp).setheading, v)
-setup(setheading)
+    interp.add_command(cur(interp).setheading, v)
 
+@logofunc(aware=True)
 def home(interp):
-    interp.addCommand(cur(interp).setheading, 0)
-    interp.addCommand(cur(interp).goto, 0, 0)
-    interp.addCommand(canvas.update)
-setup(home)
+    interp.add_command(cur(interp).setheading, 0)
+    interp.add_command(cur(interp).goto, 0, 0)
+    interp.add_command(canvas.update)
 
+@logofunc(aliases=['cs', 'clearscreen'], aware=True)
 def clear(interp):
     home(interp)
-    interp.addCommand(cur(interp).clear)
-    interp.addCommand(canvas.update)
-setup(clear, 'cs', 'clearscreen')
+    interp.add_command(cur(interp).clear)
+    interp.add_command(canvas.update)
 
+@logofunc(aware=True, arity=1)
 def distance(interp, other, orig=None):
     if orig is None:
         orig = cur(interp)
     return math.sqrt((orig.position()[0]-other.position()[0])**2 +
                      (orig.position()[1]-other.position()[1])**2)
-setup(distance, arity=1)
 
 def allturtles():
     return [t() for t in _allTurtles if t()]
@@ -152,28 +147,28 @@ def newturtle():
     _allTurtles.append(weakref.ref(p))
     return p
 
+@logofunc(aware=True)
 def tell(interp, t, block):
     interp = interp.new()
-    interp.setVariableLocal('turtle', t)
+    interp.set_variable_local('turtle', t)
     return interp.eval(block)
-setup(tell)
 
 canvas = None
 
+@logofunc(aware=True)
 def logo_turtle_main(interp):
     global canvas
     if getattr(interp, 'canvas', None):
         canvas = interp.canvas
-logo_turtle_main.logoAware = True
 
+@logofunc(aware=True)
 def _newmainturtle(interp):
     turtle = newturtle()
-    interp.setVariable('turtle', turtle)
-_newmainturtle.logoAware = True
+    interp.set_variable('turtle', turtle)
 
 class LogoTurtle:
 
-    logoAware = True
+    logo_aware = True
 
     def __init__(self, interp):
         self.logo = interp
@@ -210,9 +205,9 @@ class LogoTurtle:
     def penwidth(self, v):
         self.pen.width(v)
     
+    @logofunc(arity=1)
     def pencolor(self, *args):
         self.pen.color(*args)
-    pencolor.arity = 1
     color = pencolor
     pc = pencolor
 

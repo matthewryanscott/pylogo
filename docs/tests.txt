@@ -1,0 +1,14 @@
+This is a test for logo::
+
+    >>> 1 + 1
+    2
+    >>> pr [hey there!]
+    hey there!
+    >>> ifelse (1 = 1) [
+    ...     print "yep
+    ... ] [
+    ...     print "nope
+    ... ]
+    yep
+
+That's it for now.

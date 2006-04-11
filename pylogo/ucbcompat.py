@@ -102,6 +102,7 @@ def mdsetitem(indexlst, array, value):
         mdsetitem(indexlst[1:], array[indexlst[0]], value)
 
 
+@logofunc(name='.setitem')
 def dotsetitem(index, array, value):
     """
     .SETITEM index array value
@@ -119,8 +120,8 @@ def dotsetitem(index, array, value):
     ## structures can cause infinite loops, but that's not an uncommon
     ## bug anyway)
     setitem(index, array, value)
-dotsetitem.logoName = '.setitem'
 
+@logofunc(aware=True)
 def push(interp, stackname, thing):
     """
     PUSH stackname thing
@@ -130,10 +131,10 @@ def push(interp, stackname, thing):
     list as its value; the initial value should be the empty list.
     New members are added at the front of the list.
     """
-    var = interp.getVariable(stackname)
+    var = interp.get_variable(stackname)
     var.append(thing)
-push.logoAware = True
 
+@logofunc(aware=True)
 def pop(interp, stackname):
     """
     POP stackname
@@ -142,10 +143,10 @@ def pop(interp, stackname):
     value of the variable whose name is ``stackname`` and removes that
     member from the stack.
     """
-    var = interp.getVariable(stackname)
+    var = interp.get_variable(stackname)
     return var.pop()
-pop.logoAware = True
 
+@logofunc(aware=True)
 def queue(interp, queuename, thing):
     """
     QUEUE queuename thing
@@ -155,10 +156,10 @@ def queue(interp, queuename, thing):
     list as its value; the initial value should be the empty list.
     New members are added at the back of the list.
     """
-    var = interp.getVariable(queuename)
+    var = interp.get_variable(queuename)
     var.append(thing)
-queue.logoAware = True
 
+@logofunc(aware=True)
 def dequeue(interp, queuename):
     """
     DEQUEUE queuename
@@ -167,10 +168,10 @@ def dequeue(interp, queuename):
     value of the variable whose name is ``queuename`` and removes that
     member from the queue.
     """
-    var = interp.getVariable(queuename)
+    var = interp.get_variable(queuename)
     return var.pop(0)
-dequeue.logoAware = True
 
+@logofunc(aliases=['array?'])
 def arrayp(v):
     """
     ARRAYP thing
@@ -179,8 +180,8 @@ def arrayp(v):
     outputs TRUE if the input is an array, FALSE otherwise.
     """
     return isinstance(v, UCBArray)
-arrayp.aliases = ['array?']
 
+@logofunc(aliases=['backslashed?'])
 def backslashedp(c):
     """
     BACKSLASHEDP char
@@ -308,6 +309,7 @@ def closeall():
         del _files[key]
         value.close()
 
+@logofunc(aliases=['erf'])
 def erasefile(filename):
     """
     ERASEFILE filename
@@ -317,9 +319,8 @@ def erasefile(filename):
     currently be open.
     """
     os.unlink(_prefix + filename)
-erasefile.aliases = ['erf']
 
-_inDribble = False
+_in_dribble = False
 
 class Dribbler:
 
@@ -424,6 +425,7 @@ def plist(plistname):
         v.extend([key, value])
     return LogoList(v)
 
+@logofunc(aliases=['plist?'])
 def plistp(plistname):
     """
     PLISTP name

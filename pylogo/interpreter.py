@@ -25,8 +25,14 @@ class Interpreter:
     operations (this class is abstract).
     """
 
-    specialForms = {}
+    special_forms = {}
     "Methods register themselves using this dictionary"
+
+    def special(name, special_forms=special_forms):
+        def decorator(func):
+            special_forms[name] = func
+            return func
+        return decorator
 
     def __init__(self, tokenizer=None):
         self.tokenizers = []
@@ -40,7 +46,7 @@ class Interpreter:
         return self.tokenizers[-1]
     tokenizer = property(tokenizer__get)
 
-    def pushTokenizer(self, tokenizer):
+    def push_tokenizer(self, tokenizer):
         """
         You can stack up multiple tokenizers, as the interpreter goes
         from evaluating a file to a list to a sublist, etc.  New
@@ -49,19 +55,19 @@ class Interpreter:
         #print "Pushing %r onto %r" % (tokenizer, self)
         self.tokenizers.append(tokenizer)
 
-    def popTokenizer(self):
+    def pop_tokenizer(self):
         #print "Popping %r from %r" % (self.tokenizers[-1], self)
         self.tokenizers.pop()
 
     def expr(self):
         """
-        Top level expression-getter/evaluator (see also exprTop).
+        Top level expression-getter/evaluator (see also expr_top).
         """
         try:
-            val = self.exprWithoutError()
+            val = self.expr_without_error()
         except LogoError, e:
             # This is used for creating the traceback
-            e.setFrame(self)
+            e.set_frame(self)
             raise
         except (LogoControl, SystemExit, KeyboardInterrupt,
                 StopIteration):
@@ -73,11 +79,11 @@ class Interpreter:
             traceback.print_exc()
             # @@: should add the exception traceback to this somehow
             newExc = LogoError(str(e), description=str(e))
-            newExc.setFrame(self)
+            newExc.set_frame(self)
             raise newExc
         return val
 
-    def exprTop(self):
+    def expr_top(self):
         """
         Unlike expr(), this ignores empty lines; should only be used
         in top-level expressions (including expressions taken from
@@ -100,7 +106,7 @@ class Interpreter:
             return EOF
         return self.expr()
 
-    def exprWithoutError(self):
+    def expr_without_error(self):
         """
         Get a full expression from the tokenizer, execute it, and
         return the value.
@@ -120,7 +126,7 @@ class Interpreter:
                         break
             else:
                 break
-        val = self.exprInner()
+        val = self.expr_inner()
         while 1:
             # Check if there's any infix operators:
             p = self.tokenizer.peek()
@@ -128,7 +134,7 @@ class Interpreter:
                          '>=', '=>', '<=', '=<', '<>']:
                 break
             self.tokenizer.next()
-            e = self.exprInner()
+            e = self.expr_inner()
             # @@: no order of precedence
             if p == '/':
                 val = float(val) / e
@@ -155,7 +161,7 @@ class Interpreter:
         return val
 
 
-    def exprInner(self):
+    def expr_inner(self):
         """
         An 'inner' expression, an expression that does not include
         infix operators.
@@ -186,7 +192,7 @@ class Interpreter:
 
         if tok == '\n':
             raise LogoEndOfLine("The end of the line was not expected")
-            return self.exprInner()
+            return self.expr_inner()
 
         elif tok is EOF:
             raise LogoEndOfCode("The end of the code block was not expected")
@@ -212,12 +218,12 @@ class Interpreter:
 
         elif tok == ':':
             tok = self.tokenizer.next()
-            return self.getVariable(tok)
+            return self.get_variable(tok)
 
         elif tok == '[':
-            self.tokenizer.pushContext('[')
-            result = self.exprList()
-            self.tokenizer.popContext()
+            self.tokenizer.push_context('[')
+            result = self.expr_list()
+            self.tokenizer.pop_context()
             return result
 
         elif tok == ';':
@@ -227,10 +233,10 @@ class Interpreter:
                     break
 
         elif tok == '(':
-            self.tokenizer.pushContext('(')
+            self.tokenizer.push_context('(')
             try:
                 func = self.tokenizer.peek()
-                if not reader.isWord(func):
+                if not reader.is_word(func):
                     # We don't actually have a function call then, but
                     # just a sub-expression.
                     val = self.expr()
@@ -239,8 +245,8 @@ class Interpreter:
                     return val
                 else:
                     self.tokenizer.next()
-                if self.specialForms.has_key(func.lower()):
-                    val = self.specialForms[func.lower()](self, greedy=True)
+                if self.special_forms.has_key(func.lower()):
+                    val = self.special_forms[func.lower()](self, greedy=True)
                 else:
                     args = []
                     while 1:
@@ -253,22 +259,22 @@ class Interpreter:
                         elif tok is EOF:
                             raise LogoEndOfCode("Unexpected end of code (')' expected)")
                         args.append(self.expr())
-                    val = self.apply(self.getFunction(func), args)
+                    val = self.apply(self.get_function(func), args)
                 if not self.tokenizer.next() == ')':
                     raise LogoSyntaxError("')' was expected.")
             finally:
-                self.tokenizer.popContext()
+                self.tokenizer.pop_context()
             return val
 
         else:
-            if not reader.isWord(tok):
+            if not reader.is_word(tok):
                 raise LogoSyntaxError("Unknown token: %r" % tok)
-            if self.specialForms.has_key(tok.lower()):
-                val = self.specialForms[tok.lower()](self, greedy=False)
+            if tok.lower() in self.special_forms:
+                val = self.special_forms[tok.lower()](self, greedy=False)
             else:
-                func = self.getFunction(tok)
+                func = self.get_function(tok)
                 n = arity(func)
-                self.tokenizer.pushContext('func')
+                self.tokenizer.push_context('func')
                 try:
                     args = []
                     # -1 arity means the function is greedy
@@ -283,10 +289,11 @@ class Interpreter:
                         for i in range(n):
                             args.append(self.expr())
                 finally:
-                    self.tokenizer.popContext()
+                    self.tokenizer.pop_context()
                 return self.apply(func, args)
         
-    def specialMake(self, greedy):
+    @special('make')
+    def special_make(self, greedy):
         """
         The special MAKE form (special because a variable in the
         first argument isn't evaluated).
@@ -294,25 +301,24 @@ class Interpreter:
         tok = self.tokenizer.next()
         if tok in ('"', ':'):
             tok = self.tokenizer.next()
-        self.setVariable(tok, self.expr())
-    specialForms['make'] = specialMake
+        self.set_variable(tok, self.expr())
 
-    def specialLocalMake(self, greedy):
+    @special('localmake')
+    def special_localmake(self, greedy):
         """
         The special LOCALMAKE form
         """
         tok = self.tokenizer.next()
         if tok in ('"', ':'):
             tok = self.tokenizer.next()
-        self.setVariableLocal(tok, self.expr())
-    specialForms['localmake'] = specialLocalMake
+        self.set_variable_local(tok, self.expr())
 
-
-    def specialTo(self, greedy):
+    @special('to')
+    def special_to(self, greedy):
         """
         The special TO form.
         """
-        self.tokenizer.pushContext('to')
+        self.tokenizer.push_context('to')
         vars = []
         default = None
         name = self.tokenizer.next()
@@ -340,11 +346,11 @@ class Interpreter:
             body.append(tok)
         func = UserFunction(name, vars, default, body)
         self.functions[name.lower()] = func
-        self.tokenizer.popContext()
+        self.tokenizer.pop_context()
         return func
-    specialForms['to'] = specialTo
 
-    def specialLocal(self, greedy):
+    @special('local')
+    def special_local(self, greedy):
         """
         The special LOCAL form (with unevaluated variables).  (Should
         this be generally greedy?)
@@ -356,7 +362,7 @@ class Interpreter:
                 if tok in (':', '"'):
                     self.tokenizer.next()
                     continue
-                elif not reader.isWord(tok):
+                elif not reader.is_word(tok):
                     break
                 vars.append(tok)
                 self.tokenizer.next()
@@ -367,9 +373,9 @@ class Interpreter:
         for v in vars:
             self.makeLocal(v)
         return None
-    specialForms['local'] = specialLocal
 
-    def specialFor(self, greedy):
+    @special('for')
+    def special_for(self, greedy):
         """
         Special FOR form.  Again with the variable name.
         """
@@ -380,7 +386,7 @@ class Interpreter:
         block = self.expr()
         try:
             for v in seq:
-                self.setVariableLocal(varName, v)
+                self.set_variable_local(varName, v)
                 try:
                     val = self.eval(block)
                 except LogoContinue:
@@ -388,9 +394,8 @@ class Interpreter:
         except LogoStop:
             pass
         return val
-    specialForms['for'] = specialFor        
 
-    def exprList(self):
+    def expr_list(self):
         """
         Grab a list (the '[' has already been grabbed).
         """
@@ -400,7 +405,7 @@ class Interpreter:
             if tok == ']':
                 return LogoList(body, self.tokenizer.file)
             elif tok == '[':
-                tok = self.exprList()
+                tok = self.expr_list()
             body.append(tok)
 
     def eval(self, lst):
@@ -409,49 +414,49 @@ class Interpreter:
         """
         tokenizer = reader.ListTokenizer(lst)
         val = None
-        self.pushTokenizer(tokenizer)
+        self.push_tokenizer(tokenizer)
         try:
             while 1:
                 tok = self.tokenizer.peek()
                 if tok is EOF:
                     return val
-                val = self.exprTop()
+                val = self.expr_top()
         finally:
-            self.popTokenizer()
+            self.pop_tokenizer()
         return val
 
     def apply(self, func, args):
         """
         Apply the `args` to the `func`.  If the function has an
-        attribute `logoAware`, which is true, then the first argument
+        attribute `logo_aware`, which is true, then the first argument
         passed to the function will be this interpreter object.  This
         allows special functions, like IF or WHILE, to manipulate the
         interpreter.
         """
-        if getattr(func, 'logoAware', 0):
+        if getattr(func, 'logo_aware', 0):
             return func(self, *args)
         else:
             return func(*args)
 
-    def importFunction(self, func, names=None):
+    def import_function(self, import_function, names=None):
         """
         Inputs the function `func` into the namespace, using the name
         it was originally defined with.  The special attribute
-        `logoName` overrides the function name, and `aliases` provides
+        `logo_name` overrides the function name, and `aliases` provides
         abbreviations for the function (like FD for FORWARD).
         """
-        d = func.func_dict
-        if d.get('logoHide'):
+        d = import_function.func_dict
+        if d.get('logo_hide'):
             return
         if names is None:
-            name = d.get('logoName', func.func_name)
+            name = d.get('logo_name', import_function.func_name)
             if name.startswith('_'): return
             names = [name] + list(d.get('aliases', []))
         #print "Importing functions %s" % ', '.join(names)
         for n in names:
-            self.setFunction(n, func)
+            self.setFunction(n, import_function)
 
-    def importModule(self, mod):
+    def import_module(self, mod):
         """
         Import a module (either a module object, or the string name of
         the module), moving all of its exported functions into the
@@ -466,7 +471,7 @@ class Interpreter:
             mod = loadModule(mod)
         print "Importing %s" % mod.__name__
         if os.path.exists('defs/%s.logodef' % mod.__name__):
-            defs = self.loadDefs('defs/%s.logodef' % mod.__name__)
+            defs = self.load_defs('defs/%s.logodef' % mod.__name__)
         else:
             defs = {}
         main_name = mod.__name__.split('.')[-1] + '_main'
@@ -488,13 +493,13 @@ class Interpreter:
                     names.extend(aliases)
                     if not names:
                         continue
-                    self.importFunction(obj, names)
+                    self.import_function(obj, names)
                 else:
-                    self.importFunction(obj)
+                    self.import_function(obj)
         if main_func:
             main_func(self)
             
-    def loadDefs(self, filename):
+    def load_defs(self, filename):
         """
         Load function definitions from a file.  This file should have
         one function annotation on a line (lines starting with # or ;
@@ -533,7 +538,7 @@ class Interpreter:
             defs[funcName] = useName, arity, aliases
         return defs
 
-    def importLogo(self, filename):
+    def import_logo(self, filename):
         """
         Import a logo file.  This executes the file, including any TO
         statements, putting everything into the normal namespace/scope.
@@ -541,33 +546,33 @@ class Interpreter:
         print "Loading %s." % filename
         f = open(filename)
         tokenizer = reader.FileTokenizer(f)
-        self.pushTokenizer(tokenizer)
+        self.push_tokenizer(tokenizer)
         try:
             while 1:
-                v = self.exprTop()
+                v = self.expr_top()
                 if v is EOF: break
         finally:
-            self.popTokenizer()
+            self.pop_tokenizer()
         try:
             main_name = os.path.splitext(os.path.basename(filename))[0] + '_main'
-            func = self.getFunction(main_name)
+            func = self.get_function(main_name)
         except LogoNameError:
             pass
         else:
             self.apply(func, ())
         f.close()
 
-    def inputLoop(self, input, output):
+    def input_loop(self, input, output):
         """
         Read-Eval-Print-Repeat loop, i.e., the standard prompt.
         """
         tokenizer = reader.FileTokenizer(input, output=output,
                                          prompt=self.prompts)
-        self.pushTokenizer(tokenizer)
+        self.push_tokenizer(tokenizer)
         try:
             while 1:
                 try:
-                    v = self.exprTop()
+                    v = self.expr_top()
                 except LogoError, e:
                     print e.description, ':', e
                     v = None
@@ -589,7 +594,7 @@ class Interpreter:
                 if v is not None:
                     print "%s" % repr(v)
         finally:
-            self.popTokenizer()
+            self.pop_tokenizer()
 
     # Some standard prompts:
     prompts = {
@@ -600,6 +605,8 @@ class Interpreter:
         'func': '..? ',
         }
 
+    del special
+
 def arity(func):
     """
     Get the arity of a function (the number of arguments it takes).
@@ -607,14 +614,14 @@ def arity(func):
     override, otherwise `inspect` is used to find the number of
     arguments.
 
-    Since `logoAware` functions take an interpreter as the first
+    Since `logo_aware` functions take an interpreter as the first
     argument, the arity of these functions is reduced by one.
     """
     if hasattr(func, 'arity'):
         return func.arity
     args, varargs, varkw, defaults = inspect.getargspec(func)
     a = len(args) - len(defaults or [])
-    if func.func_dict.get('logoAware'):
+    if func.func_dict.get('logo_aware'):
         a -= 1
     return a
 
@@ -635,7 +642,7 @@ class UserFunction(object):
         else:
             self.arity = default
         self.body = body
-        self.logoAware = 1
+        self.logo_aware = 1
 
     def __call__(self, interpreter, *args):
         tokenizer = reader.ListTokenizer(LogoList(self.body, None))
@@ -643,15 +650,15 @@ class UserFunction(object):
         if len(args) < len(self.vars):
             args = args + (None,)*(len(self.vars)-len(args))
         for var, arg in zip(self.vars, args):
-            interpreter.setVariableLocal(var, arg)
+            interpreter.set_variable_local(var, arg)
         if len(args) > len(self.vars):
-            interpreter.setVariableLocal('rest', args[len(self.vars):])
+            interpreter.set_variable_local('rest', args[len(self.vars):])
         while 1:
             tok = tokenizer.peek()
             if tok is EOF:
                 return
             try:
-                interpreter.exprTop()
+                interpreter.expr_top()
             except LogoOutput, exc:
                 return exc.value
 
@@ -684,17 +691,17 @@ class RootFrame(Interpreter):
     def tokenizerStack(self):
         return self.tokenizers[:]
 
-    def getVariable(self, v):
+    def get_variable(self, v):
         v = v.lower()
         if self.vars.has_key(v):
             return self.vars[v]
         raise LogoNameError(
             "Variable :%s has not been set." % v)
 
-    def setVariable(self, v, value):
+    def set_variable(self, v, value):
         self.vars[v.lower()] = value
 
-    def setVariableLocal(self, v, value):
+    def set_variable_local(self, v, value):
         self.vars[v.lower()] = value
 
     def _setVariableIfPresent(self, v, value):
@@ -707,7 +714,7 @@ class RootFrame(Interpreter):
     def new(self, tokenizer=None):
         return self.Frame(self, tokenizer=tokenizer or self.tokenizer)
 
-    def getFunction(self, name):
+    def get_function(self, name):
         try:
             return self.functions[name.lower()]
         except KeyError:
@@ -739,8 +746,8 @@ class RootFrame(Interpreter):
         raise LogoSyntaxError(
             "You can only use LOCAL in a function (TO).")
 
-    def addCommand(self, func, *args, **kw):
-        return self.app.addCommand(func, *args, **kw)
+    def add_command(self, func, *args, **kw):
+        return self.app.add_command(func, *args, **kw)
 
 class Frame(RootFrame):
 
@@ -780,7 +787,7 @@ class Frame(RootFrame):
         """
         return self.__class__(self, tokenizer=tokenizer or self.tokenizer)
 
-    def getVariable(self, v):
+    def get_variable(self, v):
         v = v.lower()
         if self.vars.has_key(v):
             return self.vars[v]
@@ -791,9 +798,9 @@ class Frame(RootFrame):
         if self is self.root:
             raise LogoNameError(
                 "Variable :%s has not been set." % v)
-        return self.parent.getVariable(v)
+        return self.parent.get_variable(v)
 
-    def setVariable(self, v, value):
+    def set_variable(self, v, value):
         v = v.lower()
         if not self._setVariableIfPresent(v, value):
             self.vars[v] = value
@@ -805,8 +812,8 @@ class Frame(RootFrame):
         else:
             return self.parent._setVariableIfPresent(v, value)
 
-    def getFunction(self, name):
-        return self.root.getFunction(name)
+    def get_function(self, name):
+        return self.root.get_function(name)
 
     def setFunction(self, name, func):
         return self.root.setFunction(name)
@@ -830,11 +837,11 @@ class Frame(RootFrame):
     def makeLocal(self, v):
         self.localVars[v] = None
 
-    def setVariableLocal(self, v, value):
+    def set_variable_local(self, v, value):
         self.vars[v.lower()] = value
 
-    def addCommand(self, func, *args, **kw):
-        return self.root.addCommand(func, *args, **kw)
+    def add_command(self, add_command, *args, **kw):
+        return self.root.add_command(add_command, *args, **kw)
 
 RootFrame.Frame = Frame
 
@@ -859,7 +866,7 @@ def loadModule(name, path=None):
 # Logo is the root, global interpreter object:
 Logo = RootFrame()
 from pylogo import builtins
-Logo.importModule(builtins)
+Logo.import_module(builtins)
 #if os.path.exists('init.logo'):
 #    Logo.importLogo('init.logo')
 
@@ -867,6 +874,6 @@ if __name__ == '__main__':
     import sys
     filenames = sys.argv[1:]
     for filename in filenames:
-        Logo.importLogo(filename)
+        Logo.import_logo(filename)
     import sys
-    Logo.inputLoop(sys.stdin, sys.stdout)
+    Logo.input_loop(sys.stdin, sys.stdout)

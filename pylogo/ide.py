@@ -8,8 +8,8 @@ root = Pmw.initialise()
 
 class IDE:
     def __init__(self, parent):
-        self.incomingHistory = Queue()
-        self.incomingCommands = Queue()
+        self.incoming_history = Queue()
+        self.incoming_commands = Queue()
         self.parent = parent
 
         self.menuBar = Pmw.MainMenuBar(parent)
@@ -26,59 +26,63 @@ class IDE:
         #self.menuFrame.pack(fill='x', side='top', expand=0)
         #self.menuFrame.tk_menuBar(self.fileMenu(), self.helpMenu())
 
-        self.pw = Pmw.PanedWidget(parent,
-                                  hull_borderwidth=1,
-                                  hull_relief='sunken')
+        self.pw = Pmw.PanedWidget(
+            parent,
+            hull_borderwidth=1,
+            hull_relief='sunken')
         pane = self.pw.add('canvas', size=.5)
-        self.scroller = TurtleSpace(pane,
-                                    canvas_width=1000,
-                                    canvas_height=1000,
-                                    canvas_background="white")
+        self.scroller = TurtleSpace(
+            pane,
+            canvas_width=1000,
+            canvas_height=1000,
+            canvas_background="white")
         self.scroller.pack(side='top', expand=1)
 
         pane3 = self.pw.add('history', size=.4)
-        self.history = Pmw.ScrolledText(pane3,
-                                        borderframe=1,
-                                        vscrollmode='static',
-                                        text_width=70)
+        self.history = Pmw.ScrolledText(
+            pane3,
+            borderframe=1,
+            vscrollmode='static',
+            text_width=70)
         self.history.pack(side='top', expand=1)
 
         pane2 = self.pw.add('entry', size=.1)
-        self.input = Pmw.EntryField(pane2,
-                                    command=self.feedInput,
-                                    entry_width=72)
+        self.input = Pmw.EntryField(
+            pane2,
+            command=self.feed_input,
+            entry_width=72)
         self.input.pack(side='top', expand=1)
 
         self.pw.pack(expand=1, fill='both')
         self.canvas = canvas = self.scroller.component('canvas')
-        self.parent.after(100, self.idleUpdates)
+        self.parent.after(100, self.idle_updates)
         #item = canvas.create_arc(5, 5, 35, 35, fill='red', extent=315)
         return
 
-    def feedInput(self):
+    def feed_input(self):
         value = self.input.getvalue() + '\n'
         self.logoCommunicator.addInput(value)
         self.input.clear()
-        self.updateHistory()
-        self.updateCommands()
+        self.update_history()
+        self.update_commands()
 
-    def idleUpdates(self):
+    def idle_updates(self):
         #print "IDLE"
-        self.updateHistory()
-        self.updateCommands()
-        self.parent.after(100, self.idleUpdates)
+        self.update_history()
+        self.update_commands()
+        self.parent.after(100, self.idle_updates)
 
-    def addHistory(self, val):
+    def add_history(self, val):
         # This should actually put some event in place, so that the
         # main thread knows it should try to update the history when
         # it has the chance.
-        self.incomingHistory.put(val)
+        self.incoming_history.put(val)
         
-    def updateHistory(self):
+    def update_history(self):
         history = []
         while 1:
             try:
-                history.append(self.incomingHistory.get_nowait())
+                history.append(self.incoming_history.get_nowait())
             except Empty:
                 break
         for line in history:
@@ -102,10 +106,10 @@ class IDE:
         about = Pmw.AboutDialog(self.parent, applicationname='PyLogo')
         about.show()
 
-    def updateCommands(self):
+    def update_commands(self):
         while 1:
             try:
-                command = self.incomingCommands.get_nowait()
+                command = self.incoming_commands.get_nowait()
             except Empty:
                 return
             if command == 'quit':
@@ -119,7 +123,7 @@ class IDE:
                 if command[0]:
                     command[0].put([False, val])
 
-    def runCommand(self, func, *args, **kw):
+    def run_command(self, func, *args, **kw):
         if kw.has_key('_nowait'):
             nowait = kw['_nowait']
             del kw['_nowait']
@@ -129,7 +133,7 @@ class IDE:
             out = None
         else:
             out = Queue(1)
-        self.incomingCommands.put((out, func, args, kw))
+        self.incoming_commands.put((out, func, args, kw))
         if out:
             error, result = out.get()
             if error:
@@ -137,9 +141,9 @@ class IDE:
             else:
                 return result
 
-    def addCommand(self, func, *args, **kw):
+    def add_command(self, func, *args, **kw):
         kw['_nowait'] = 1
-        return self.runCommand(func, *args, **kw)
+        return self.run_command(func, *args, **kw)
 
 class TurtleSpace(Pmw.ScrolledCanvas):
 
@@ -161,7 +165,7 @@ class LogoCommunicator:
 
     def start(self):
         self.logoThread = threading.Thread(
-            target=self.interp.inputLoop,
+            target=self.interp.input_loop,
             args=(reader.TrackingStream(self), self))
         self.logoThread.start()
 
@@ -171,7 +175,7 @@ class LogoCommunicator:
     def addInput(self, value):
         if not value.endswith('\n'):
             value += '\n'
-        self.app.addHistory(value)
+        self.app.add_history(value)
         self.pendingInput.put(value)
         self.inputEvent.set()
 
@@ -180,7 +184,7 @@ class LogoCommunicator:
         return result
 
     def write(self, value):
-        self.app.addHistory(value)
+        self.app.add_history(value)
 
     def flush(self):
         pass
@@ -198,7 +202,7 @@ def main():
     TheApp.input.component('entry').focus_force()
     comm = LogoCommunicator(TheApp, interpreter.Logo)
     sys.stdout = comm
-    interpreter.Logo.importModule(logo_turtle)
+    interpreter.Logo.import_module(logo_turtle)
     logo_turtle.logo_turtle_main(interpreter.Logo)
     logo_turtle._newmainturtle(interpreter.Logo)
     

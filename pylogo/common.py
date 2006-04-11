@@ -9,30 +9,29 @@ class LogoError(Exception):
         Exception.__init__(self, *args)
         # We don't always get the tokenizer immediately,
         # but sometimes we do...
-        if kw.has_key('tokenizer'):
-            tokenizer = kw['tokenizer']
-            del kw['tokenizer']
+        if 'tokenizer' in kw:
+            tokenizer = kw.pop('tokenizer')
         else:
             tokenizer = None
         self.kw = kw
         if tokenizer is not None:
-            self.setTokenizer(tokenizer)
+            self.set_tokenizer(tokenizer)
         self.msg = ' '.join(args)
         self.frame = None
-        if kw.has_key('description'):
+        if 'description' in kw:
             self.description = kw['description']
 
-    def setFrame(self, frame):
+    def set_frame(self, frame):
         if self.frame:
             return
         self.frame = frame
         self.stack = [FrozenFrame(frame, frame.tokenizer,
                                   row=self.kw.get('row'),
                                   col=self.kw.get('col'))]
-        self._tracebackInitialized = False
-        self.initializeTraceback()
+        self._traceback_initialized = False
+        self.initialize_traceback()
 
-    def initializeTraceback(self):
+    def initialize_traceback(self):
         frame = self.frame
         tokenizers = frame.tokenizers[:-1]
         while 1:
@@ -44,7 +43,7 @@ class LogoError(Exception):
                 continue
             self.stack.append(FrozenFrame(frame, tokenizers[-1]))
             tokenizers = tokenizers[:-1]
-        self._tracebackInitialized = True
+        self._traceback_initialized = True
         self.stack.reverse()
 
     def traceback(self):
@@ -103,13 +102,13 @@ class FrozenFrame:
 
     def __str__(self):
         if self.file:
-            return errorForFile(self.file, self.row, self.col)
+            return error_for_file(self.file, self.row, self.col)
         elif self.list is not None:
-            return errorForList(self.list, self.pos)
+            return error_for_list(self.list, self.pos)
         else:
             assert 0, "Unknown frame/tokenizer type"
 
-def errorForFile(errorFile, row=None, col=None):
+def error_for_file(errorFile, row=None, col=None):
     try:
         name = errorFile.name
     except AttributeError:
@@ -126,7 +125,7 @@ def errorForFile(errorFile, row=None, col=None):
             pass
     if row is not None:
         s = 'File %s, line %i\n' % (name, row)
-        l = errorFile.rowLine(row)
+        l = errorFile.row_line(row)
         if l is not None:
             s += l
             s += '%s^\n' % (' '*col)
@@ -134,10 +133,10 @@ def errorForFile(errorFile, row=None, col=None):
         s = 'File %s\n' % name
     return s
 
-def errorForList(lst, pos=None):
+def error_for_list(lst, pos=None):
     try:
         f = lst.sourceList
-        s = errorForFile(f) + '\n'
+        s = error_for_file(f) + '\n'
     except AttributeError:
         s = ''
     if pos is not None:
@@ -173,12 +172,11 @@ class LogoList(list):
     #    self.file = sourceFile
     #    return self
 
-    def __init__(self, body=None, sourceFile=None):
-        #self.body = body
+    def __init__(self, body=None, source_file=None):
         if body is None:
             body = []
         list.__init__(self, body)
-        self.file = sourceFile
+        self.file = source_file
 
 class LogoControl(Exception):
     pass
@@ -200,3 +198,20 @@ class _EOF:
         return '[EOF]'
 
 EOF = _EOF()
+
+
+def logofunc(name=None, aliases=None, aware=False,
+             arity=None, hide=False):
+    def decorator(func):
+        if name is not None:
+            func.logo_name = name
+        if arity is not None:
+            func.arity = arity
+        if aliases is not None:
+            func.aliases = aliases
+        if aware:
+            func.logo_aware = aware
+        if hide:
+            func.logo_hide = hide
+        return func
+    return decorator

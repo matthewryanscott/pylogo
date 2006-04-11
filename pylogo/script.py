@@ -32,11 +32,11 @@ def doit(args):
             print "  -q or --quit     quit after loading and running files"
             print "  -c or --console  run the interpreter in the console (not the GUI)"
             sys.exit()
-        Logo.importLogo(filename)
+        Logo.import_logo(filename)
 
     if not quit_after:
         if use_ide:
             from pylogo import ide
             ide.main()
         else:
-            Logo.inputLoop(sys.stdin, sys.stdout)
+            Logo.input_loop(sys.stdin, sys.stdout)

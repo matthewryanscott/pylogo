@@ -22,6 +22,7 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+from sets import Set
 
 from pylogo.common import *
 from pylogo import reader
@@ -46,7 +47,8 @@ def word(*args):
     return ''.join(map(str, args))
 word.arity = 2
 
-def logoList(*args):
+@logofunc(name='list', arity=2)
+def logo_list(*args):
     """
     LIST thing1 thing2
     (LIST thing1 thing2 thing3 ...)
@@ -55,18 +57,16 @@ def logoList(*args):
     Logo datum (word, list, or array).
     """
     return list(args)
-logoList.logoName = 'list'
-logoList.arity = 2
 
-def logoRepr(arg):
+def logo_repr(arg):
     if isinstance(arg, list):
-        return '[%s]' % _join(map(logoSoftRepr, arg))
+        return '[%s]' % _join(map(logo_soft_repr, arg))
     elif isinstance(arg, str):
         return '"%s' % arg
     else:
         return repr(arg)
 
-def logoSoftRepr(arg):
+def logo_soft_repr(arg):
     """
     Like logoRepr, only we're already in a quoted context, so
     we don't have to quote strings.
@@ -74,7 +74,7 @@ def logoSoftRepr(arg):
     if isinstance(arg, str):
         return arg
     else:
-        return logoRepr(arg)
+        return logo_repr(arg)
 
 def _join(args):
     """
@@ -93,12 +93,13 @@ def _join(args):
         result.write(arg)
     return result.getvalue()
 
-def logoStr(arg):
+def logo_str(arg):
     if isinstance(arg, list):
-        return ' '.join(map(logoSoftRepr, arg))
+        return ' '.join(map(logo_soft_repr, arg))
     else:
         return str(arg)
 
+@logofunc(aliases=['se'], arity=2)
 def sentence(*args):
     """
     SENTENCE thing1 thing2
@@ -116,8 +117,6 @@ def sentence(*args):
         else:
             result.append(arg)
     return result
-sentence.arity = 2
-sentence.aliases = ['se']
 
 def fput(thing, l):
     """
@@ -165,7 +164,7 @@ def reverse(l):
     return l
 
 _synnum = 0
-_synnumLock = threading.Lock()
+_synnum_lock = threading.Lock()
 def gensym():
     """
     GENSYM
@@ -174,12 +173,12 @@ def gensym():
     form G1, G2, etc.
     """
     global _synnum
-    _synnumLock.acquire()
+    _synnum_lock.acquire()
     try:
         _synnum += 1
         return 'G%i' % _synnum
     finally:
-        _synnumLock.release()
+        _synnum_lock.release()
 
 ## Selectors
 
@@ -226,6 +225,7 @@ def last(thing):
     """
     return thing[-1]
 
+@logofunc(aliases=['bf'])
 def butfirst(thing):
     """
     BUTFIRST wordorlist
@@ -239,8 +239,8 @@ def butfirst(thing):
         return thing[1:]
     else:
         return thing[1:]
-butfirst.aliases = ['bf']
 
+@logofunc(aliases=['bfs'])
 def butfirsts(things):
     """
     BUTFIRSTS list
@@ -259,8 +259,8 @@ def butfirsts(things):
     tools MAP, MAP.SE, and FOREACH.
     """
     return [butfirst(thing) for thing in things]
-butfirsts.aliases = ['bfs']
 
+@logofunc(aliases=['bl'])
 def butlast(thing):
     """
     BUTLAST wordorlist
@@ -274,7 +274,6 @@ def butlast(thing):
         return thing[:-1]
     else:
         return thing[:-1]
-butlast.aliases = ['bl']
 
 def item(index, thing):
     """
@@ -321,13 +320,7 @@ def remdup(l):
     or more members of the input are equal, the rightmost of those
     members is the one that remains in the output.
     """
-    items = {}
-    newL = []
-    for item in l:
-        if not items.has_key(item):
-            newL.append(item)
-            items[item] = None
-    return newL
+    return list(Set(l))
 
 ## Mutators
 
@@ -345,6 +338,7 @@ def setitem(index, thing, value):
         thing[index-1] = value
     return thing
 
+@logofunc(name='.setfirst')
 def dotsetfirst(lst, value):
     """
     .SETFIRST list value
@@ -357,8 +351,8 @@ def dotsetfirst(lst, value):
     structures that share storage with the list being modified.
     """
     lst[0] = value
-dotsetfirst.logoName = '.setfirst'
 
+@logofunc(name='.setbf')
 def dotsetbf(lst, value):
     """
     .SETBF list value
@@ -375,10 +369,10 @@ def dotsetbf(lst, value):
     while len(lst) != 1:
         lst.pop()
     lst.append(value)
-dotsetbf.logoName = '.setbf'
 
 ## Predicates
 
+@logofunc(aliases=['word?'])
 def wordp(thing):
     """
     WORDP thing
@@ -387,8 +381,8 @@ def wordp(thing):
     outputs TRUE if the input is a word, FALSE otherwise.
     """
     return type(thing) is str
-wordp.aliases = ['word?']
 
+@logofunc(aliases=['list?'])
 def listp(val):
     """
     LISTP thing
@@ -397,8 +391,8 @@ def listp(val):
     outputs TRUE if the input is a list, FALSE otherwise.
     """
     return isinstance(val, list)
-listp.aliases = ['list?']
 
+@logofunc(aliases=['empty?'])
 def emptyp(thing):
     """
     EMPTYP thing
@@ -408,8 +402,8 @@ def emptyp(thing):
     FALSE otherwise.
     """
     return thing == '' or thing == [] or thing == () or thing == {}
-emptyp.aliases = ['empty?']
 
+@logofunc(aliases=['equal?'])
 def equalp(thing1, thing2):
     """
     EQUALP thing1 thing2
@@ -431,8 +425,8 @@ def equalp(thing1, thing2):
     of them will also change the other.)
     """
     return thing1 == thing2
-equalp.aliases = ['equal?']
 
+@logofunc(aliases=['before?'])
 def beforep(word1, word2):
     """
     BEFOREP word1 word2
@@ -446,8 +440,8 @@ def beforep(word1, word2):
     after 1.
     """
     return word1 < word2
-beforep.aliases = ['before?']
 
+@logofunc(name='.eq')
 def doteq(thing1, thing2):
     """
     .EQ thing1 thing2
@@ -457,8 +451,8 @@ def doteq(thing1, thing2):
     FALSE otherwise, even if the inputs are equal in value.
     """
     return thing1 is thing2
-doteq.logoName = '.eq'
 
+@logofunc(aliases=['member?'])
 def memberp(thing1, l):
     """
     MEMBERP thing1 thing2
@@ -470,8 +464,8 @@ def memberp(thing1, l):
     EQUALP to a character of ``thing2``, FALSE otherwise.
     """
     return thing1 in l
-memberp.aliases = ['member?']
 
+@logofunc(aliases=['substring?'])
 def substringp(thing1, thing2):
     """
     SUBSTRINGP thing1 thing2
@@ -483,8 +477,8 @@ def substringp(thing1, thing2):
     """
     return type(thing2) is str and type(thing1) is str \
            and thing2.find(thing1) != -1
-substringp.aliases = ['substring?']
 
+@logofunc(aliases=['number?'])
 def numberp(thing):
     """
     NUMBERP thing
@@ -493,7 +487,6 @@ def numberp(thing):
     outputs TRUE if the input is a number, FALSE otherwise.
     """
     return type(thing) is int or type(thing) is float
-numberp.aliases = ['number?']
 
 ## Queries
 
@@ -540,15 +533,16 @@ def member(thing1, thing2):
     FALSE, outputs the empty word or list according to the type of
     ``thing2``.  It is an error for ``thing2`` to be an array.
     """
-    if type(thing2) is str:
+    if isinstance(thing2, basestring):
         i = thing2.find(thing1)
         if i == -1:
             return ''
         else:
             return thing2[i:]
     else:
-        i = thing2.index(thing1)
-        if i == -1:
+        try:
+            i = thing2.index(thing1)
+        except ValueError:
             return []
         else:
             return thing2[i:]
@@ -580,6 +574,7 @@ def uppercase(word):
 ##############################
 ## Transmitters
 
+@logofunc(aliases=['print'], arity=-1)
 def pr(*args):
     """
     PRINT thing thing2 thing3 ...
@@ -596,14 +591,13 @@ def pr(*args):
     trans = []
     for arg in args:
         if isinstance(arg, list):
-            trans.append(_join(map(logoSoftRepr, arg)))
+            trans.append(_join(map(logo_soft_repr, arg)))
         else:
-            trans.append(logoSoftRepr(arg))
+            trans.append(logo_soft_repr(arg))
     print ' '.join(trans)
-pr.aliases = ['print']
-pr.arity = -1
 
-def logoType(*args):
+@logofunc(name='type', arity=-1)
+def logo_type(*args):
     """
     TYPE thing thing2 thing3 ...
     (TYPE thing1 thing2 ...)
@@ -620,8 +614,6 @@ def logoType(*args):
             trans.append(repr(arg))
     sys.stdout.write(' '.join(trans))
     sys.stdout.flush()
-logoType.logoName = 'type'
-logoType.arity = -1
 
 def show(*args):
     """
@@ -693,6 +685,7 @@ def readrawline():
 
 # @@: all unimplemented
 
+@logofunc(arity=2)
 def sum(*args):
     """
     SUM num1 num2
@@ -702,7 +695,6 @@ def sum(*args):
     outputs the sum of its inputs.
     """
     return reduce(operator.add, args)
-sum.arity = 2
 
 def difference(num1, num2):
     """
@@ -731,6 +723,7 @@ def minus(num):
     """
     return -num
 
+@logofunc(arity=2)
 def product(*args):
     """
     PRODUCT num1 num2
@@ -740,7 +733,6 @@ def product(*args):
     outputs the product of its inputs.
     """
     return reduce(operator.mul, args)
-product.arity = 2
 
 def quotient(num1, num2):
     """
@@ -778,7 +770,8 @@ def modulo(num1, num2):
     """
     return num1 % num2
 
-def logoInt(num):
+@logofunc(name='int')
+def logo_int(num):
     """
     INT num
 
@@ -788,21 +781,19 @@ def logoInt(num):
     the input.
     """
     return int(num)
-logoInt.logoName = 'int'
 
-def logoRound(v, *args):
+@logofunc(name='round', arity=1)
+def logo_round(v, *args):
     """
     ROUND num
 
     outputs the nearest integer to the input.
     """
     return round(v, *args)
-logoRound.logoName = 'round'
-logoRound.arity = 1
 
-def logoAbs(v):
+@logofunc(name='abs')
+def logo_abs(v):
     return abs(v)
-logoAbs.logoName = 'abs'
 
 def sqrt(v):
     """
@@ -846,9 +837,9 @@ def ln(v):
     """
     return math.log(v)
 
-def _toDegrees(num):
+def _to_degrees(num):
     return (num / math.pi) * 180
-def _toRadians(num):
+def _to_radians(num):
     return (num / 180.0) * math.pi
 
 def sin(num):
@@ -857,7 +848,7 @@ def sin(num):
 
     outputs the sine of its input, which is taken in degrees.
     """
-    return math.sin(_toRadians(num))
+    return math.sin(_to_radians(num))
 
 def radsin(v):
     """
@@ -873,7 +864,7 @@ def cos(num):
 
     outputs the cosine of its input, which is taken in degrees.
     """
-    return math.cos(_toRadians(num))
+    return math.cos(_to_radians(num))
 
 def radcos(v):
     """
@@ -892,7 +883,7 @@ def arctan(num, second=None):
     inputs, outputs the arctangent of y/x, if x is nonzero, or
     90 or -90 depending on the sign of y, if x is zero.
     """
-    return _toDegrees(radarctan(num, second))
+    return _to_degrees(radarctan(num, second))
 
 def radarctan(num, second=None):
     """
@@ -911,7 +902,7 @@ def radarctan(num, second=None):
     else:
         return math.atan(num)
 
-def iseq(fromNum, toNum):
+def iseq(from_num, to_num):
     """
     ISEQ from to
 
@@ -922,9 +913,9 @@ def iseq(fromNum, toNum):
         ? show iseq 7 3
         [7 6 5 4 3]
     """
-    return range(fromNum, toNum+1)
+    return range(from_num, to_num+1)
 
-def rseq(fromNum, toNum, length):
+def rseq(from_num, to_num, length):
     """
     RSEQ from to count
 
@@ -936,14 +927,15 @@ def rseq(fromNum, toNum, length):
         ? show rseq 3 5 5
         [3 3.5 4 4.5 5]
     """
-    result = [fromNum + (float(i)*(toNum-fromNum)/(length-1))
+    result = [from_num + (float(i)*(to_num-from_num)/(length-1))
               for i in range(length-1)]
-    result.append(toNum)
+    result.append(to_num)
     return result
 
 ##############################
 ## Predicates
 
+@logofunc(aliases=['less?'])
 def lessp(num1, num2):
     """
     LESSP num1 num2
@@ -953,8 +945,8 @@ def lessp(num1, num2):
     outputs TRUE if its first input is strictly less than its second.
     """
     return num1 < num2
-lessp.aliases = ['less?']
 
+@logofunc(aliases=['greater?'])
 def greaterp(num1, num2):
     """
     GREATERP num1 num2
@@ -964,12 +956,12 @@ def greaterp(num1, num2):
     outputs TRUE if its first input is strictly greater than its second.
     """
     return num1 > num2
-greaterp.aliases = ['greater?']
 
 ##############################
 ## Random Numbers
 
-def logoRandom(num):
+@logofunc(name='random')
+def logo_random(num):
     """
     RANDOM num
 
@@ -977,7 +969,6 @@ def logoRandom(num):
     must be an integer.
     """
     return random.randint(0, num-1)
-logoRandom.logoName = 'random'
 
 def rerandom(seed=None):
     """
@@ -1004,6 +995,7 @@ def rerandom(seed=None):
 ##############################
 ## Bitwise operations
 
+@logofunc(arity=2)
 def bitand(*args):
     """
     BITAND num1 num2
@@ -1012,8 +1004,8 @@ def bitand(*args):
     outputs the bitwise AND of its inputs, which must be integers.
     """
     return reduce(operator.and_, args)
-bitand.arity = 2
 
+@logofunc(arity=2)
 def bitor(*args):
     """
     BITOR num1 num2
@@ -1022,8 +1014,8 @@ def bitor(*args):
     outputs the bitwise OR of its inputs, which must be integers.
     """
     return reduce(operator.or_, args)
-bitor.arity = 2
 
+@logofunc(arity=2)
 def bitxor(*args):
     """
     BITXOR num1 num2
@@ -1033,7 +1025,6 @@ def bitxor(*args):
     integers.
     """
     return reduce(operator.xor, args)
-bitxor.arity = 2
 
 def bitnot(num):
     """
@@ -1066,7 +1057,8 @@ def lshift(num1, num2):
 ##############################
 ## Logical statements
 
-def logoAnd(interp, *vals):
+@logofunc(name='and', aware=True, arity=2)
+def logo_and(interp, *vals):
     """
     AND tf1 tf2
     (AND tf1 tf2 tf3 ...)
@@ -1087,11 +1079,9 @@ def logoAnd(interp, *vals):
         if not val:
             return False
     return True
-logoAnd.arity = 2
-logoAnd.logoName = 'and'
-logoAnd.logoAware = True
 
-def logoOr(interp, *vals):
+@logofunc(name='or', aware=True, arity=2)
+def logo_or(interp, *vals):
     """
     OR tf1 tf2
     (OR tf1 tf2 tf3 ...)
@@ -1112,11 +1102,9 @@ def logoOr(interp, *vals):
         if val:
             return True
     return False
-logoOr.arity = 2
-logoOr.logoName = 'or'
-logoOr.logoAware = True
 
-def logoNot(interp, val):
+@logofunc(name='not', aware=True)
+def logo_not(interp, val):
     """
     NOT tf
 
@@ -1127,8 +1115,6 @@ def logoNot(interp, val):
     if isinstance(val, list):
         val = interp.eval(val)
     return not val
-logoNot.logoName = 'not'
-logoNot.logoAware = True
 
 
 ########################################
@@ -1144,7 +1130,8 @@ logoNot.logoAware = True
 ##############################
 ## Procedure Definition
 
-def logoDefine(interp, procname, text):
+@logofunc(name='define', aware=True)
+def logo_define(interp, procname, text):
     """
     DEFINE procname text
 
@@ -1167,8 +1154,6 @@ def logoDefine(interp, procname, text):
         body.append('\n')
     func = interpreter.UserFunction(procname, args, None, body)
     interp.setFunction(procname, func)
-logoDefine.logoAware = True
-logoDefine.logoName = 'define'
 
 def text(interp, procname):
     """
@@ -1181,7 +1166,7 @@ def text(interp, procname):
     when the procedure was defined, such as continuation lines and
     extra spaces.
     """
-    func = interp.getFunction(procname)
+    func = interp.get_function(procname)
     if not isinstance(func, interpreter.UserFunction):
         return []
     args = func.vars
@@ -1205,6 +1190,7 @@ def text(interp, procname):
 
 # builtin: make, local, localmake
 
+@logofunc(aware=True)
 def thing(interp, v):
     """
     THING varname
@@ -1215,8 +1201,7 @@ def thing(interp, v):
     of that name is chosen.  The colon notation is an abbreviation not
     for THING but for the combination so that :FOO means THING \"FOO.
     """
-    return interp.getVariable(v)
-thing.logoAware = True
+    return interp.get_variable(v)
 
 # @@: global
 
@@ -1228,6 +1213,7 @@ thing.logoAware = True
 ##############################
 ## Predicates
 
+@logofunc(aliases=['procedure?'], aware=True)
 def procedurep(interp, name):
     """
     PROCEDUREP name
@@ -1236,9 +1222,8 @@ def procedurep(interp, name):
     outputs TRUE if the input is the name of a procedure.
     """
     return interp.root.functions.has_key(name)
-procedurep.logoAware = 1
-procedurep.aliases = ['procedure?']
 
+@logofunc(aliases=['primitive?'], aware=True)
 def primitivep(interp, name):
     """
     PRIMITIVEP name
@@ -1248,13 +1233,12 @@ def primitivep(interp, name):
     (one built into Logo).
     """
     try:
-        func = interp.getFunction(name)
+        func = interp.get_function(name)
     except LogoNameError:
         return False
     return not isinstance(func, intepreter.UserFunction)
-primitivep.logoAware = True
-primitivep.aliases = ['primitive?']
 
+@logofunc(aliases=['defined?'], aware=True)
 def definedp(interp, name):
     """
     DEFINEDP name
@@ -1263,13 +1247,12 @@ def definedp(interp, name):
     outputs TRUE if the input is the name of a user-defined procedure.
     """
     try:
-        func = interp.getFunction(name)
+        func = interp.get_function(name)
     except LogoNameError:
         return False
     return isinstance(func, intepreter.UserFunction)
-definedp.logoAware = True
-definedp.aliases = ['defined?']
     
+@logofunc(aliases=['name?'], aware=True)
 def namep(interp, name):
     """
     NAMEP name
@@ -1278,18 +1261,17 @@ def namep(interp, name):
     outputs TRUE if the input is the name of a variable.
     """
     try:
-        interp.getVariable(name)
+        interp.get_variable(name)
         return True
     except LogoNameError:
         return False
-namep.logoAware = 1
-namep.aliases = ['name?']
 
 ##############################
 ## Queries
 
 # @@: contents, buried, traced, stepped
 
+@logofunc(aware=True)
 def procedures(interp):
     """
     PROCEDURES
@@ -1298,8 +1280,8 @@ def procedures(interp):
     in the workspace.  
     """
     return interp.functions.keys()
-procedures.logoAware = 1
 
+@logofunc(aware=True)
 def names(interp):
     """
     NAMES
@@ -1309,7 +1291,6 @@ def names(interp):
     names in the workspace.
     """
     return interp.variableNames()
-names.logoAware = 1
 
 # @@: plists, namelist, pllist, nodes
 
@@ -1321,6 +1302,7 @@ names.logoAware = 1
 ##############################
 ## Workspace Control
 
+@logofunc(aliases=['er'], aware=True)
 def erase(interp, l):
     """
     ERASE contentslist
@@ -1334,9 +1316,8 @@ def erase(interp, l):
         l = [l]
     for n in l:
         interp.eraseName(n)
-erase.logoAware = 1
-erase.aliases = ['er']
 
+@logofunc(aware=True)
 def erall(interp):
     """
     ERALL
@@ -1347,8 +1328,8 @@ def erall(interp):
     # @@: No buried makes this dangerous
     erase(interp, names(interp))
     erase(interp, procedures(interp))
-erall.logoAware = 1
 
+@logofunc(aware=True)
 def erps(interp):
     """
     ERPS
@@ -1357,8 +1338,8 @@ def erps(interp):
     Abbreviates ERASE PROCEDURES.
     """
     erase(interp, procedures(interp))
-erall.logoAware = 1
 
+@logofunc(aware=True)
 def erns(interp):
     """
     ERNS
@@ -1367,45 +1348,44 @@ def erns(interp):
     Abbreviates ERASE NAMES.
     """
     erase(interp, names(interp))
-erns.logoAware = 1
 
 # @@: ern, erpl, bury, buryall, buryname, unbury, unburyall
 # @@: buriedp/buried?, trace, untrace, tracedp/traced?, step, unstep
 # @@: steppedp/stepped?, edit/ed, editfile, edall, edps, edns, edpls,
 # @@: edn, edpl, savel
 
+@logofunc(aware=True)
 def load(interp, name):
     if name.endswith('.logo'):
-        _loadLogo(interp, name)
+        _load_logo(interp, name)
     elif name.endswith('.py'):
-        _loadPython(interp, name)
+        _load_python(interp, name)
     elif os.path.exists(name + ".logo"):
-        _loadLogo(interp, name + ".logo")
+        _load_logo(interp, name + ".logo")
     elif os.path.exists(name + ".py"):
-        _loadPython(interp, name + ".py")
+        _load_python(interp, name + ".py")
     else:
-        _loadPython(interp, name)
-load.logoAware = 1
+        _load_python(interp, name)
 
-def _loadLogo(interp, name):
-    interp.importLogo(name)
+def _load_logo(interp, name):
+    interp.import_logo(name)
 
-def _loadPython(interp, name):
+def _load_python(interp, name):
     if name.endswith('.py'):
         name = name[:-3]
     mod = __import__(name)
-    interp.importModule(mod)
+    interp.import_module(mod)
 
-def logoHelp(interp, name):
+@logofunc(name='help', aware=True)
+def logo_help(interp, name):
     """
     HELP name
 
     command.  Prints information from the reference manual about the
     primitive procedure named by the input.
     """
-    func = interp.getFunction(name)
+    func = interp.get_function(name)
     print func.__doc__
-logoHelp.logoAware = True
 
 # @@: gc
 
@@ -1413,7 +1393,8 @@ logoHelp.logoAware = True
 ## Control Structures
 ########################################
 
-def logoRun(interp, l):
+@logofunc(name='run', aware=True)
+def logo_run(interp, l):
     """
     RUN instructionlist
     
@@ -1425,16 +1406,14 @@ def logoRun(interp, l):
     except LogoOutput, e:
         return e.value
     return None
-logoRun.logoAware = True
-logoRun.logoName = 'run'
 
 # @@: runresult
 
-def logoEval(interp, l):
+@logofunc(name='eval', aware=True)
+def logo_eval(interp, l):
     return interp.eval(l)
-logoEval.logoAware = 1
-logoEval.logoName = 'eval'
 
+@logofunc(aware=True)
 def repeat(interp, n, block):
     """
     REPEAT num instructionlist
@@ -1459,15 +1438,15 @@ def repeat(interp, n, block):
     except NameError:
         del interp._repcount
     return lastVal
-repeat.logoAware = 1
 
+@logofunc(aware=True)
 def forever(interp, block):
     if hasattr(interp, '_repcount'):
         lastrepcount = interp._repcount
     try:
         while 1:
             try:
-                logoEval(interp, block)
+                logo_eval(interp, block)
             except LogoContinue:
                 pass
     except LogoBreak:
@@ -1476,8 +1455,8 @@ def forever(interp, block):
         setattr(interp, '_repcount', lastrepcount)
     except NameError:
         del interp._repcount
-forever.logoAware = 1
 
+@logofunc(aware=True)
 def repcount(interp):
     """
     REPCOUNT
@@ -1490,12 +1469,12 @@ def repcount(interp):
         return interp._repcount
     except AttributeError:
         return -1
-repcount.logoAware = True
 
+@logofunc(aware=True)
 def test(interp, val):
-    interp.setVariableLocal('lasttestvalue', val)
-test.logoAware = True
+    interp.set_variable_local('lasttestvalue', val)
 
+@logofunc(aliases=['ift'], aware=True)
 def iftrue(interp, lst):
     """
     IFTRUE instructionlist
@@ -1505,11 +1484,10 @@ def iftrue(interp, lst):
     a TRUE input.  The TEST must have been in the same procedure or a
     superprocedure.
     """
-    if interp.getVariable('lasttestvalue'):
+    if interp.get_variable('lasttestvalue'):
         return interp.eval(lst)
-iftrue.logoAware = True
-iftrue.aliases = ['ift']
 
+@logofunc(aliases=['iff'], aware=True)
 def iffalse(interp, lst):
     """
     IFFALSE instructionlist
@@ -1519,12 +1497,11 @@ def iffalse(interp, lst):
     a FALSE input.  The TEST must have been in the same procedure or a
     superprocedure.
     """
-    if not interp.getVariable('lasttestvalue'):
+    if not interp.get_variable('lasttestvalue'):
         return interp.eval(lst)
-iffalse.logoAware = True
-iffalse.aliases = ['iff']
 
-def logoIf(interp, expr, block, elseBlock=None):
+@logofunc(name='if', aware=True)
+def logo_if(interp, expr, block, elseBlock=None):
     """
     IF tf instructionlist
     (IF tf instructionlist1 instructionlist2)
@@ -1536,13 +1513,12 @@ def logoIf(interp, expr, block, elseBlock=None):
     either TRUE or FALSE.
     """
     if expr:
-        return logoEval(interp, block)
+        return logo_eval(interp, block)
     elif elseBlock is not None:
-        return logoEval(interp, elseBlock)
-logoIf.logoAware = 1
-logoIf.logoName = 'if'
+        return logo_eval(interp, elseBlock)
 
-def logoIfElse(interp, expr, trueBlock, falseBlock):
+@logofunc(name='ifelse', aware=True)
+def logo_ifelse(interp, expr, trueBlock, falseBlock):
     """
     IFELSE tf instructionlist1 instructionlist2
 
@@ -1552,13 +1528,11 @@ def logoIfElse(interp, expr, trueBlock, falseBlock):
     instructionlist contains an expression that outputs a value.
     """
     if expr:
-        return logoEval(interp, trueBlock)
+        return logo_eval(interp, trueBlock)
     else:
-        return logoEval(interp, falseBlock)
-logoIfElse.logoAware = 1
-logoIfElse.logoName = 'ifelse'
+        return logo_eval(interp, falseBlock)
 
-def logoBreak():
+def logo_break():
     raise LogoBreak()
 
 def stop():
@@ -1571,6 +1545,7 @@ def stop():
     """
     raise LogoOutput(None)
 
+@logofunc(aliases=['op', 'return'])
 def output(value):
     """
     OUTPUT value
@@ -1583,14 +1558,12 @@ def output(value):
     but the procedure that invokes OUTPUT is an operation.
     """
     raise LogoOutput(value)
-output.aliases = ['op', 'return']
 
 # @@: catch, throw, error, pause
 
-def logoContinue():
+@logofunc(name='continue', aliases=['co'])
+def logo_continue():
     raise LogoContinue()
-logoContinue.logoName = 'continue'
-logoContinue.aliases = ['co']
 
 def bye():
     sys.exit()
@@ -1606,6 +1579,7 @@ def ignore(value):
     """
     pass
 
+@logofunc(aware=True)
 def backtick(interp, lst):
     """
     BACKTICK list
@@ -1638,9 +1612,9 @@ def backtick(interp, lst):
             result.append(remaining[0])
             remaining = remaining[1:]
     return result
-backtick.logoAware = True
 
-def logoFor(interp, forcontrol, lst):
+@logofunc(name='for', aware=True)
+def logo_for(interp, forcontrol, lst):
     """
     FOR forcontrol instructionlist
 
@@ -1674,10 +1648,10 @@ def logoFor(interp, forcontrol, lst):
         ?
     """
     var = forcontrol[0]
-    start = _opRun(forcontrol[1])
-    end = _opRun(forcontrol[2])
+    start = _op_run(forcontrol[1])
+    end = _op_run(forcontrol[2])
     if len(forcontrol) > 3:
-        step = _opRun(forcontrol[3])
+        step = _op_run(forcontrol[3])
     else:
         if start > end:
             step = -1
@@ -1691,19 +1665,18 @@ def logoFor(interp, forcontrol, lst):
         else:
             if curr < end:
                 break
-        interp.setVariable(var, curr)
+        interp.set_variable(var, curr)
         interp.eval(lst)
         curr += step
-logoFor.logoAware = True
-logoFor.logoName = 'for'
     
-def _opRun(interp, v):
+def _op_run(interp, v):
     if isinstance(v, str):
         v = [v]
     if isinstance(v, list):
         v = interp.eval(v)
     return v
 
+@logofunc(aliases=['do.while'], aware=True)
 def dowhile(interp, lst, test):
     """
     DO.WHILE instructionlist tfexpression
@@ -1729,6 +1702,7 @@ def dowhile(interp, lst, test):
         pass
     return lastVal
 
+@logofunc(name='while', aware=True)
 def logoWhile(interp, test, block):
     """
     WHILE tfexpression instructionlist
@@ -1741,64 +1715,61 @@ def logoWhile(interp, test, block):
     """
     lastVal = None
     try:
-        while logoEval(interp, test):
+        while logo_eval(interp, test):
             try:
-                lastVal = logoEval(interp, block)
+                lastVal = logo_eval(interp, block)
             except LogoContinue:
                 pass
     except LogoBreak:
         lastVal = None
         pass
     return lastVal
-logoWhile.logoAware = 1
-logoWhile.logoName = 'while'
 
 # @@: continue with do.until
 
-def logoFor(interp, name, l, block):
+@logofunc(name='for', aware=True)
+def logo_for(interp, name, l, block):
     for item in l:
-        interp.setVariable(name, item)
+        interp.set_variable(name, item)
         try:
-            logoEval(interp, block)
+            logo_eval(interp, block)
         except LogoContinue:
             pass
-logoFor.logoAware = 1
-logoFor.logoName = 'for'
 
+@logofunc(aware=True)
 def dowhile(interp, block, clause):
     try:
-        logoEval(interp, block)
+        logo_eval(interp, block)
     except LogoContinue:
         pass
     logoWhile(interp, clause, block)
-dowhile.logoAware = 1
 
+@logofunc(aware=True)
 def until(interp, clause, block):
-    while not logoEval(interp, clause):
+    while not logo_eval(interp, clause):
         try:
-            logoEval(block)
+            logo_eval(block)
         except LogoContinue:
             pass
-until.logoAware = 1
 
+@logofunc(aware=True)
 def dountil(interp, block, clause):
     try:
-        logoEval(interp, block)
+        logo_eval(interp, block)
     except LogoContinue:
         pass
     until(interp, clause, block)
-dountil.logoAware = 1
 
 ########################################
 ## PyLogo primitives
 ########################################
 
-def logoAssert(value, message=None):
+@logofunc(name='assert')
+def logo_assert(value, message=None):
     if message is None:
         assert value
     else:
         assert value, message
-logoAssert.logoName = 'assert'
 
 def assertequal(value1, value2, message=None):
     if value1 != value2:
@@ -1806,7 +1777,8 @@ def assertequal(value1, value2, message=None):
             message += '; '
         message = (message or '') + '%r != %r' % (value1, value2)
         raise AssertionError, message
-        
+
+@logofunc(aware=True, arity=2)
 def function(interp, name, default=NoDefault):
     if default is NoDefault:
         return interp.getFunc(name)
@@ -1815,13 +1787,12 @@ def function(interp, name, default=NoDefault):
             return interp.getFunc(name)
         except LogoNameError:
             return default
-function.logoAware = True
-function.arity = 2
 
+@logofunc(aware=True, arity=3)
 def catch(interp, block, *args):
     assert not len(args)%2, "You must provide a block and a list of exceptions and block handlers for those exceptions (and odd number of arguments)"
     try:
-        value = logoEval(interp, block)
+        value = logo_eval(interp, block)
     except Exception, e:
         handler = None
         while 1:
@@ -1837,33 +1808,34 @@ def catch(interp, block, *args):
             args = args[2:]
         if not handler:
             raise
-        interp.setVariable('exception', e)
-        value = logoEval(interp, block)
+        interp.set_variable('exception', e)
+        value = logo_eval(interp, block)
     return value
-catch.arity = 3
 
-def logoGetattr(obj, attr, *args):
+@logofunc(name='getattr')
+def logo_getattr(obj, attr, *args):
     return getattr(obj, attr, *args)
-logoGetattr.logoName = 'getattr'
 
-def logoSetattr(obj, attr, *args):
+@logofunc(name='setattr')
+def logo_setattr(obj, attr, *args):
     return setattr(obj, attr, *args)
-logoSetattr.logoName = 'setattr'
 
-def logoNone():
+@logofunc(name='None')
+def logo_none():
     return None
-logoNone.logoName = 'none'
 
-def logoTrue():
+@logofunc(name='true')
+def logo_rue():
     return True
-logoTrue.logoName = 'true'
 
-def logoFalse():
+@logofunc(name='false')
+def logo_alse():
     return False
-logoFalse.logoName = 'false'
 
 _spawnnum = 0
 _spawnnumLock = threading.Lock()
+
+@logofunc(aware=True)
 def spawn(interp, block, starter=None):
     global _spawnnum
     _spawnnumLock.acquire()
@@ -1877,12 +1849,11 @@ def spawn(interp, block, starter=None):
         interp.eval(block)
         block = starter
     threadname = 'thread_%i' % mynum
-    interp.setVariableLocal('threadname', threadname)
-    t = threading.Thread(target=logoEval, args=(interp, block),
+    interp.set_variable_local('threadname', threadname)
+    t = threading.Thread(target=logo_eval, args=(interp, block),
                          name=threadname)
     t.start()
     return threadname
-spawn.logoAware = True
 
 def wait(sec):
     time.sleep(sec)
@@ -1890,31 +1861,30 @@ def wait(sec):
 def timestamp():
     return time.time()
 
+@logofunc(aware=True)
 def startsync(interp):
-    interp.setVariableLocal('synctimestamp', time.time())
-startsync.logoAware = True
+    interp.set_variable_local('synctimestamp', time.time())
 
+@logofunc(aware=True)
 def sync(interp, sec):
-    last = interp.getVariable('synctimestamp')
+    last = interp.get_variable('synctimestamp')
     now = time.time()
     t = last+sec-now
     if t > 0:
         time.sleep(t)
-    interp.setVariable('synctimestamp', time.time())
-sync.logoAware = True
+    interp.set_variable('synctimestamp', time.time())
 
-def logoImport(interp, name):
+@logofunc(name='import', aware=True)
+def logo_import(interp, name):
     if isinstance(name, list):
         name = '.'.join(name)
     try:
-        interp.importModule(name)
+        interp.import_module(name)
     except ImportError:
         #try:
-            interp.importModule('pylogo.%s' % name)
+            interp.import_module('pylogo.%s' % name)
         #except ImportError:
         #    interp.importModule('src.%s' % name)
-logoImport.logoAware = True
-logoImport.logoName = 'import'
 
 def newdict(lst=None):
     if lst:
@@ -1940,20 +1910,19 @@ def values(d):
 def items(d):
     return d.items()
 
+@logofunc(aware=True)
 def call(interp, func, *args):
     if isinstance(func, str):
-        func = interp.getFunction(func)
+        func = interp.get_function(func)
     return func(*args)
-call.logoAware = True
 
-def logoNew(interp, cls):
-    if getattr(cls, 'logoAware', False):
+@logofunc(name='new', aware=True)
+def logo_new(interp, cls):
+    if getattr(cls, 'logo_aware', False):
         inst = cls(interp)
     else:
         inst = cls()
     return inst
-logoNew.logoAware = True
-logoNew.logoName = 'new'
 
 #def builtins_main(interp):
 #    logoImport(interp, 'pylogo.logo_turtle')
