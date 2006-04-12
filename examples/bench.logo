@@ -1,13 +1,13 @@
 to timeit :rep :block
-  make :start timestamp
+  make "start timestamp
   for :i (iseq 0 :rep) :block
-  make :stop timestamp
+  make "stop timestamp
   print "Ran :block :rep "times "in :stop-:start "secs
 end
 
 to square10
-  make :result 0
-  for :i iseq 0 10 [make :result :result + (:i*:i)]
+  make "result 0
+  for "i iseq 0 10 [make :result :result + (:i*:i)]
   output :result
 end
 
@@ -16,7 +16,7 @@ to bench_square
 end
 
 to shapes :count
-  for :i iseq 0 :count [poly 100 (:count-:i)+2 cs]
+  for "i iseq 0 :count [poly 100 (:count-:i)+2 cs]
 end
 
 to poly :size :sides
@@ -29,7 +29,7 @@ to bench_poly
   st
 end
 
-[Python:
+ignore [Python:
 
 import time
 def timeit(rep, func):

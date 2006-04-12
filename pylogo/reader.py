@@ -225,7 +225,7 @@ class TrackingStream:
     for tracebacks.
     """
 
-    def __init__(self, file, name):
+    def __init__(self, file, name=None):
         self.file = file
         self.col = 0
         self.row = 0
