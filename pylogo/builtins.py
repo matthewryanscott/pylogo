@@ -320,7 +320,12 @@ def remdup(l):
     or more members of the input are equal, the rightmost of those
     members is the one that remains in the output.
     """
-    return list(Set(l))
+    new = []
+    for item in l:
+        if item in new:
+            new.remove(item)
+        new.append(item)
+    return new
 
 ## Mutators
 
@@ -609,9 +614,9 @@ def logo_type(*args):
     trans = []
     for arg in args:
         if isinstance(arg, list):
-            trans.append(' '.join(map(repr, arg)))
+            trans.append(_join(map(logo_soft_repr, arg)))
         else:
-            trans.append(repr(arg))
+            trans.append(logo_soft_repr(arg))
     sys.stdout.write(' '.join(trans))
     sys.stdout.flush()
 
@@ -1098,7 +1103,7 @@ def logo_or(interp, *vals):
     """
     for val in vals:
         if isinstance(val, list):
-            val = logo.eval(val)
+            val = interp.eval(val)
         if val:
             return True
     return False
@@ -1443,9 +1448,11 @@ def repeat(interp, n, block):
 def forever(interp, block):
     if hasattr(interp, '_repcount'):
         lastrepcount = interp._repcount
+    interp._repcount = 0
     try:
         while 1:
             try:
+                interp._repcount += 1
                 logo_eval(interp, block)
             except LogoContinue:
                 pass
@@ -1532,9 +1539,11 @@ def logo_ifelse(interp, expr, trueBlock, falseBlock):
     else:
         return logo_eval(interp, falseBlock)
 
+@logofunc(name='break')
 def logo_break():
     raise LogoBreak()
 
+@logofunc()
 def stop():
     """
     STOP

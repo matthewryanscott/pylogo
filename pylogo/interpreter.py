@@ -75,12 +75,13 @@ class Interpreter:
             raise
         except Exception, e:
             # Here we wrap other exceptions... this needs some work
-            import traceback
-            traceback.print_exc()
+            #import traceback
+            #traceback.print_exc()
+            exc_info = sys.exc_info()
             # @@: should add the exception traceback to this somehow
             newExc = LogoError(str(e), description=str(e))
             newExc.set_frame(self)
-            raise newExc
+            raise LogoError, newExc, exc_info[2]
         return val
 
     def expr_top(self):
@@ -406,6 +407,9 @@ class Interpreter:
                 return LogoList(body, self.tokenizer.file)
             elif tok == '[':
                 tok = self.expr_list()
+            if tok is EOF:
+                raise LogoEndOfCode(
+                    "The end of the code was not expected (waiting for ])")
             body.append(tok)
 
     def eval(self, lst):
@@ -469,7 +473,7 @@ class Interpreter:
         """
         if type(mod) is str:
             mod = loadModule(mod)
-        print "Importing %s" % mod.__name__
+        #print "Importing %s" % mod.__name__
         if os.path.exists('defs/%s.logodef' % mod.__name__):
             defs = self.load_defs('defs/%s.logodef' % mod.__name__)
         else:

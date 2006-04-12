@@ -189,7 +189,7 @@ class LogoRunner(doctest.DocTestRunner):
         try:
             v = interp.expr_top()
             if v is not None:
-                print '%s' % repr(v)
+                print builtins.logo_repr(v)
         finally:
             interp.pop_tokenizer()
 
