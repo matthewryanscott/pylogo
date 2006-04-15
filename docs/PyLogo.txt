@@ -297,15 +297,16 @@ Any function defined at the top level of the module will be imported
 into the Logo namespace.  You can add function attributes to control
 this more closely, however.  Function attributes are added like::
 
+    from pylogo.common import logofunc
+    @logofunc(...)
     def func(args):
         ....
-    func.attribute = value
 
-Some attributes:
+Some arguments:
 
-``logoHide``:
+``hide``:
     If true, don't import this function.
-``logoName``:
+``name``:
     Overrides the name of the function.  E.g., in ``builtins`` I have
     a function ``logoEval`` with ``logoEval.logoName = 'eval'``.  Use
     lower-case names for these.
@@ -316,7 +317,7 @@ Some attributes:
     Logo will auto-detect the number of arguments, ignoring any
     argument that is given a default value.  If you want to override
     this, use ``arity``.  E.g., ``logoSum.arity = 2``.
-``logoAware``:
+``aware``:
     If true, the first argument to the function will be the
     interpreter object (and the arity will be adjusted).  This way the
     function can access special Logo features.  See below:
@@ -331,34 +332,35 @@ source).  There's a few methods you may wish to use:
 
 ``.eval(lst)``:
     Evaluate the list, returning the value of the last expression.
-``.getFunction(functionName)``:
+``.get_function(functionName)``:
     Return the function object.  You should use ``apply`` to run it.
-``.setFunction(functionName, func)``:
+``.set_function(functionName, func)``:
     Add the function to the interpreter.
 ``.apply(func, args)``:
     Run the function ``func`` with the given ``args`` (a list or
     tuple); mostly this just uses the ``logoAware`` rule.
-``.getVariable(var)``:
+``.get_variable(var)``:
     Return the value of the variable.  ``pylogo.common.LogoNameError``
     is raised if the variable is not found.
-``.setVariable(var, value)``:
+``.set_variable(var, value)``:
     Set the variable.
-``.setVariableLocal(var, value)``:
+``.set_variable_local(var, value)``:
     Set the variable in the local scope (``setVariable`` will find the
     first scope where the variable is defined, and only if the
     variable is not found in any parent scope will it set it locally).
 ``.new()``:
     Create a new scope (which is attached to a new interpreter
     object).  This is how you create a local scope.
-``.functionNames()``:
+``.function_names()``:
     Return a list of function names.
-``.variableNames()``:
+``.variable_names()``:
     Return a list of variable names.
 
 Other Logos
 ===========
 
-For reference, here are some other free logo implementations:
+For reference, here are some other free logo implementations (this
+list isn't very up-to-date):
 
 * `Logo Foundation`_: a good place to start looking at Logo and
   learning about Logo.

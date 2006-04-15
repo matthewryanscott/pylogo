@@ -18,11 +18,19 @@ setup(name="PyLogo",
       description="Logo interpreter",
       long_description="""\
 An interpreter for the Logo educational programming language.
+
+This version of Logo is a faithful representation of the language,
+written in a way that makes it compatible with Python code.
+Primitives are written in Python, and Python can call Logo code
+similar to how it calls Python code.
+
+There is a `Subversion repository
+<http://svn.colorstudy.com/PyLogo/trunk#egg=PyLogo-dev>`_.
 """,
       classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 3 - Beta",
         "Intended Audience :: Education",
-        "License :: OSI Approved :: Python Software Foundation License",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Logo",
         "Programming Language :: Python",
         "Topic :: Education",

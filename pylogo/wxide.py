@@ -1,3 +1,4 @@
+"""
 from wxPython.wx import *
 
 ID_ABOUT = 101
@@ -54,5 +55,7 @@ class IDE(wxApp):
         self.SetTopWindow(frame)
         return true
 
-app = IDE(0)
-app.MainLoop()
+if __name__ == '__main__':
+    app = IDE(0)
+    app.MainLoop()
+"""

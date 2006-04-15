@@ -1,3 +1,5 @@
+from pylogo.common import *
+
 class UCBArray(list):
     def __init__(v, origin=1):
         list.__init__(v)

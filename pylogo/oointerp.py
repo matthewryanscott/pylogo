@@ -1,5 +1,6 @@
 import interpreter
 from types import *
+from common import *
 
 class OOFrame(interpreter.Frame):
 

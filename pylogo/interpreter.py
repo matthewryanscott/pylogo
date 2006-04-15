@@ -167,19 +167,22 @@ class Interpreter:
         An 'inner' expression, an expression that does not include
         infix operators.
 
-        exprInner ::= <literal int or float>
-                  ::= '-' expr
-                  ::= '+' expr
-                  ::= ('\"' or 'QUOTE') <word>
-                  ::= ':' <word>
-                  ::= MAKE (':' or '\"') <word> expr
-                  ::= MAKE <word> expr
-                  ::= TO <to expression>
-                  ::= '[' <list expression> ']'
-                  ::= '(' <word> <expr> ... <expr> ')'
-                  ::= <word> <expr> ... <expr>
+        ::
+
+          exprInner ::= <literal int or float>
+                    ::= '-' expr
+                    ::= '+' expr
+                    ::= ('\"' or 'QUOTE') <word>
+                    ::= ':' <word>
+                    ::= MAKE (':' or '\"') <word> expr
+                    ::= MAKE <word> expr
+                    ::= TO <to expression>
+                    ::= '[' <list expression> ']'
+                    ::= '(' <word> <expr> ... <expr> ')'
+                    ::= <word> <expr> ... <expr>
 
         Things to note:
+
         * ``MAKE :x 10``, ``MAKE \"x 10``, and ``MAKE x 10`` all work
           equivalently (make is a special form, unlike in UCBLogo).
         * <list expression> is a nested list of tokens.

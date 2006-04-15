@@ -1,12 +1,11 @@
 """
 builtins for pylogo
-  Ian Bicking <ianb@colorstudy.com>
+Ian Bicking <ianb@colorstudy.com>
 
 These implement the builtins, as much as possible using the standard
-library of UCBLogo as a model:
-  http://www.cs.berkeley.edu/~bh/logo.html
-UCBLogo manual:
-  http://www.cs.berkeley.edu/~bh/usermanual
+library of `UCBLogo <http://www.cs.berkeley.edu/~bh/logo.html>`_ as a
+model.  See also the `UCBLogo Manual
+<http://www.cs.berkeley.edu/~bh/usermanual>`_.
 
 Organization of this module follows the organization of the UCB
 manual.
