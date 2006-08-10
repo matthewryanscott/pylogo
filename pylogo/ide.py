@@ -56,12 +56,11 @@ class IDE:
         self.pw.pack(expand=1, fill='both')
         self.canvas = canvas = self.scroller.component('canvas')
         self.parent.after(100, self.idle_updates)
-        #item = canvas.create_arc(5, 5, 35, 35, fill='red', extent=315)
         return
 
     def feed_input(self):
         value = self.input.getvalue() + '\n'
-        self.logoCommunicator.addInput(value)
+        self.logo_communicator.add_input(value)
         self.input.clear()
         self.update_history()
         self.update_commands()
@@ -96,7 +95,7 @@ class IDE:
     def exit(self):
         print "Exiting!"
         self.parent.destroy()
-        self.logoCommunicator.exit()
+        self.logo_communicator.exit()
         return
 
     def about(self):
@@ -156,12 +155,12 @@ class LogoCommunicator:
     def __init__(self, app, interp):
         self.interp = interp
         self.app = app
-        app.logoCommunicator = self
+        app.logo_communicator = self
         interp.canvas = app.canvas
         interp.app = app
-        self.pendingInput = Queue()
+        self.pending_input = Queue()
         self.pendingOutput = Queue()
-        self.inputEvent = threading.Event()
+        self.input_event = threading.Event()
 
     def start(self):
         self.logoThread = threading.Thread(
@@ -170,17 +169,17 @@ class LogoCommunicator:
         self.logoThread.start()
 
     def exit(self):
-        self.addInput('bye\n')
+        self.add_input('bye\n')
 
-    def addInput(self, value):
+    def add_input(self, value):
         if not value.endswith('\n'):
             value += '\n'
         self.app.add_history(value)
-        self.pendingInput.put(value)
-        self.inputEvent.set()
+        self.pending_input.put(value)
+        self.input_event.set()
 
     def readline(self):
-        result = self.pendingInput.get()
+        result = self.pending_input.get()
         return result
 
     def write(self, value):
@@ -195,16 +194,25 @@ class LogoCommunicator:
 #oointerp.install()
 from pylogo import interpreter
 
+def add_command(command, *args, **kw):
+    TheApp.add_command(command, *args, **kw)
+    return TheApp
+
+def get_canvas():
+    return TheApp.canvas
+
 def main():
     import sys
     from pylogo import logo_turtle
+    global TheApp
     TheApp = IDE(root)
     TheApp.input.component('entry').focus_force()
     comm = LogoCommunicator(TheApp, interpreter.Logo)
     sys.stdout = comm
     interpreter.Logo.import_module(logo_turtle)
-    logo_turtle.logo_turtle_main(interpreter.Logo)
-    logo_turtle._newmainturtle(interpreter.Logo)
+    logo_turtle.createturtle(interpreter.Logo)
+    #logo_turtle.logo_turtle_main(interpreter.Logo)
+    #logo_turtle._newmainturtle(interpreter.Logo)
     
     comm.start()
     

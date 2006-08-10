@@ -1,16 +1,29 @@
 #!/usr/bin/python
 
 import os, sys
+import optparse
 
 try:
     here = __file__
 except NameError:
     here = sys.argv[0]
 
-if os.path.basename(os.path.dirname(here)) == 'scripts':
-    # Then we're probably running without having been installed
-    # with setup.py...
-    sys.path.append(os.path.dirname(os.path.dirname(here)))
+parser = optparse.OptionParser(usage='%prog [OPTIONS]')
+parser.add_option(
+    '-c', '--console',
+    help="Run the interpreter in the console (not the GUI)",
+    action="store_true",
+    dest="console")
+parser.add_option(
+    '-q', '--quit',
+    help="Quit after loading and running files",
+    action="store_true",
+    dest="quit_after")
+parser.add_option(
+    '--doctest',
+    help="Doctest the given (text) files",
+    action="store_true",
+    dest="doctest")
 
 from pylogo import Logo
 
@@ -18,25 +31,22 @@ def main():
     doit(sys.argv[1:])
 
 def doit(args):
-    quit_after = False
-    use_ide = True
-    for filename in sys.argv[1:]:
-        if filename in ('-q', '--quit'):
-            quit_after = True
-            continue
-        if filename in ('-c', '--console'):
-            use_ide = False
-            continue
-        if filename == '-h':
-            print "Usage: pylogo [OPTIONS] [FILES]"
-            print "  -q or --quit     quit after loading and running files"
-            print "  -c or --console  run the interpreter in the console (not the GUI)"
-            sys.exit()
-        Logo.import_logo(filename)
-
-    if not quit_after:
-        if use_ide:
+    options, filenames = parser.parse_args(args)
+    if options.doctest:
+        from pylogo.logodoctest import testfile
+        import doctest
+        for fn in filenames:
+            print '-- Testing %s %s' % (fn, '-'*(40-len(fn)))
+            testfile(fn, optionflags=doctest.ELLIPSIS,
+                     verbose_summary=True,
+                     interp=Logo)
+    else:
+        for fn in filenames:
+            Logo.import_logo(filename)
+        if options.quit_after:
+            return
+        if options.console:
+            Logo.input_loop(sys.stdin, sys.stdout)
+        else:
             from pylogo import ide
             ide.main()
-        else:
-            Logo.input_loop(sys.stdin, sys.stdout)

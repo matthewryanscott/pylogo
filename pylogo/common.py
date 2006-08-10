@@ -203,6 +203,7 @@ EOF = _EOF()
 def logofunc(name=None, aliases=None, aware=False,
              arity=None, hide=False):
     def decorator(func):
+        func.logo_expose = True
         if name is not None:
             func.logo_name = name
         if arity is not None:

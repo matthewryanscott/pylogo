@@ -1,3 +1,6 @@
+These are automated tests for Logo.  You can run these with ``pylogo
+--doctest tests.txt``
+
 This is a test for logo::
 
     >>> 1 + 1
@@ -266,6 +269,7 @@ Some functions::
     ...     if :t > 100 [output :t]
     ...   ]
     ... end
+    Function: testfunc
     >>> testfunc 50 
     101
     >>> testfunc 10 

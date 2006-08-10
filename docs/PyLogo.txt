@@ -61,29 +61,41 @@ Features
 ========
 
 * Complete Logo language, based on the UCBLogo dialect.
+
 * Errors produce tracebacks of your Logo code.
+
 * Multi-threaded.
+
 * Multiple simultaneous turtles (unfortunately not yet compatible with
   threading).
+
 * Easily extensible from Python.
+
 * Written 100% in Python (portable, easy to read, etc).
 
 Anti-Features
 -------------
 
 * Still early in development.
+
 * A lot of erroneous, or even syntactically incorrect Logo will create
-  weird error messages, instead of causing error messages like it
-  should.
+  weird error messages, instead of causing readable error messages
+  like it should.
+
 * Python errors aren't handled too elegantly -- they get wrapped in a
   special ``LogoError`` which creates the Logo traceback (which you
   want), but this can obscure as well as assist.  Python tracebacks
   and Logo tracebacks don't quite go together.
+
 * Not very fast.  A tight loop is about 400x lower than Python, about
   10x slower than UCBLogo.  
+
 * No IDE.  No persistence (mmm, pickle_), for storing code or
   incomplete projects.  None of that clever stuff that the commercial
-  Logos have.  But maybe someday...
+  Logos have.  But maybe someday.  Alternately, it may make more sense
+  to use other IDE(ish) Python products and try to add Logo
+  interpretation there.
+
 * No quasi-quote.
 
 .. _pickle: http://python.org/doc/current/lib/module-pickle.html
@@ -92,8 +104,8 @@ Usage
 =====
 
 PyLogo's basic syntax is very similar to UCBLogo_.  You may wish to
-read the `UCBLogo manual`_ -- many of the primitives in UCBLogo are
-implemented in PyLogo (in the ``builtins.py`` module).
+read the `UCBLogo manual`_ -- most of the primitives in UCBLogo are
+implemented in PyLogo (in the ``pylogo.builtins`` module).
 
 .. _`UCBLogo manual`: http://www.cs.berkeley.edu/~bh/usermanual
 
@@ -114,19 +126,19 @@ Basic usage::
     Function: square
     ??? square 100
 
-Compared to UCBLogo
-===================
+Compared to other languages
+===========================
 
 I've also included a `post about Logo`__, which is a useful description
 for people knowledgeable about computer programming languages.
 
 .. __: LogoLanguage.html
 
-Language Differences
---------------------
+Differences from UCBLogo
+------------------------
 
 MAKE accepts UCBLogo's form (``MAKE "var 10``) and a more normal, less
-surprising form (``MAKE :var 10``).  LOCAL works the same way.
+surprising form (``MAKE :var 10``).  LOCAL, LOCALMAKE works the same way.
 
 FOR works more like Pythons ``for``, e.g. ``FOR :i :some_sequence
 [block]``.  It is a special form (hence ``:i`` instead of ``"i``).
@@ -164,6 +176,27 @@ Scoping is slightly different than in most Logos.  Barring the use of
 scope where ``:VAR`` is defined; if found we change that binding.  If
 it is not found, we set it in the local scope.  Many Logos set it in
 the global scope.
+
+Complete List of Special Forms
+------------------------------
+
+In all cases ``:VAR`` means ``:var``, ``"var`` or simply ``var``.
+
+* ``MAKE :VAR <value>``
+
+* ``LOCALMAKE :VAR ...
+
+* ``LOCAL :VAR <more vars...>``
+
+* ``TO funcname :VAR ... <default/int>``
+
+* ``FOR :VAR <sequence> [block]``
+
+* ``TELL <object> [block]`` (normal form) or ``TELL <object> method
+  args...``.  ``ASK`` means the same as ``TELL``
+
+* ``MAKEATTR <object> :VAR <value>``
+
 
 Turtles and Graphics
 --------------------
@@ -255,19 +288,28 @@ Some other extra functions:
 
 ``ASSERT``, ``ASSERTEQUAL``:
     Just like in Python
+
 ``FUNCTION``:
-    Returns a function object given the function name.
+    Returns a function object given the function name, e.g.,
+    ``FUNCTION "WORD``.
+
 ``CATCH``:
     Works like ``(CATCH [block] "LogoError [except block] ...)``.
-    Most exceptions get wrapped in a LogoError exception, so this
-    might now work that well yet.
+    Most exceptions get wrapped in a LogoError exception, so catching
+    specific exceptions might not work that well yet.  Exceptions
+    (like ``"LogoError`` in this example) are matched against the
+    exception class name.
+
 ``GETATTR``:
     Like Python's ``getattr``, e.g., ``GETATTR :dict "items`` (returns
     a function object, you'll need to use ``CALL`` to call it)
+
 ``SETATTR``:
     Like ``setattr``.
+
 ``TIMESTAMP``:
     Returns the timestamp (seconds from the Unix eon).
+
 ``CALL``:
     Calls the function object.  Takes optional arguments, which are
     passed to the function.
@@ -275,20 +317,74 @@ Some other extra functions:
 Using Objects
 -------------
 
-Short answer: it's kind of painful.
+PyLogo uses a kind of funny method for accessing objects, that I hope
+will be natural in the Logo environment.
 
-Right now you have to use things like ``CALL GETATTR :t "FORWARD``.
-There's a lot of potential to make this easier, e.g., make ``.`` into
-special syntax, like ``CALL :t.forward``, though that isn't enough.
+In each scope there can be a list of "actors", aka objects.  Everytime
+you run a function, each actor (in order) gets a chance to perform the
+operation.  So, if an actor defines an appropriate method then that is
+used.  This way you can add an actor that basically overrides
+functions; e.g., if a turtle object defines ``FD`` and you add that to
+the actor list then it will catch all those calls.  This is applied
+*dynamically*, not lexically.  That means that when you call *other*
+functions, they too will start using the object's methods.  This is an
+extension of the dynamic scoping in concept; just don't be too clever
+about it.
 
-Also, keyword arguments aren't supported, and default arguments are a
-bit crude.
+There are three basic operations for objects:
+
+``TELL`` or ``ASK``:
+    These are both equivalent.  The simple method is ``TELL <object>
+    [block]``, which runs the block with the object on the actor
+    list.  You can also do ``TELL <object> method args...``, which
+    will call the given method.  Unlike with a block, the object
+    *must* define the method.  You can also use ``ASK <object> :var``,
+    which will get an attribute (and the object *must* have the
+    ``var`` attribute).
+
+``MAKEATTR <object> :VAR <value>``:
+    This sets an attribute on the object.  ``MAKE`` never does this,
+    even though attributes from an actor object are available to read
+    as variables.
+
+``CREATE <base> "NAME [class def]``:
+    This creates a new class, or a new instance through cloning.  The
+    basis for the new object is ``<base>``.  The standard base you
+    should start with is ``:object``.  If you give a class as the
+    base, then a new class is created.  If you give an instance, a new
+    instance is created and its attributes are updated.
+
+    The class def is a series of ``MAKE`` and ``TO`` statements,
+    forming attributes and methods.  Inside a method ``:SELF`` is
+    available, as are variables for each of the attributes.
+
+    Once you've created the object, both a variable and function are
+    added to the scope -- the function creates a new instance, while
+    the variable refers to the object.  Right now there is no way to
+    take arguments while creating a function.  Maybe later.
 
 Adding Primitives with Python
 -----------------------------
 
 You should probably put all your new primitives in a file.
 ``builtins.py`` and ``logo_turtle.py`` are examples.
+
+The basic means is this::
+
+    >>> from pylogo.common import logofunc
+    >>> @logofunc(name="override_name", aliases=("other", "names"),
+    ...           aware=True, arity=-1, hide=True)
+    ... def func(interp, *args): ...
+
+``name`` is used when the Logo name is not a valid name (otherwise the
+name of the function is used).  ``aliases`` when there's multiple
+names for a function (like ``FD`` and ``FORWARD``).  ``aware`` if you
+want access to the interpreter (the ``interp`` argument in this
+case).  ``arity`` when you want to override the arity (by default it
+is picked up from the positional arguments) -- -1 means that the
+function is "greedy" and will take as many arguments as it can (for
+example, ``PRINT``).  ``hide`` means you don't want the function to
+show up in listings (even though it is available).
 
 Function Attributes
 ~~~~~~~~~~~~~~~~~~~
@@ -304,9 +400,9 @@ this more closely, however.  Function attributes are added like::
 
 Some arguments:
 
-``hide``:
+``logo_hide``:
     If true, don't import this function.
-``name``:
+``logo_name``:
     Overrides the name of the function.  E.g., in ``builtins`` I have
     a function ``logoEval`` with ``logoEval.logoName = 'eval'``.  Use
     lower-case names for these.
@@ -317,7 +413,7 @@ Some arguments:
     Logo will auto-detect the number of arguments, ignoring any
     argument that is given a default value.  If you want to override
     this, use ``arity``.  E.g., ``logoSum.arity = 2``.
-``aware``:
+``logo_aware``:
     If true, the first argument to the function will be the
     interpreter object (and the arity will be adjusted).  This way the
     function can access special Logo features.  See below:
@@ -325,7 +421,7 @@ Some arguments:
 Interpreter Object
 ~~~~~~~~~~~~~~~~~~
 
-When making primitives with ``logoAware``, you gain access to the
+When making primitives with ``aware=True``, you gain access to the
 interpreter object (this is defined in
 ``pylogo.interpreter.Interpreter`` if you want to look at the
 source).  There's a few methods you may wish to use:
@@ -364,44 +460,68 @@ list isn't very up-to-date):
 
 * `Logo Foundation`_: a good place to start looking at Logo and
   learning about Logo.
+
 * UCBLogo_, intended as a lowest-common-denominator of Logos, it's a
   straight forward, pure, and fairly complete implementation of Logo.
   PyLogo was written with UCBLogo's dialect in mind.
+
 * MSWLogo_, Windows version of UCBLogo.
+
 * ProLOGO_, written in Prolog
+
 * `Turtle Tracks`_: Java implementation of Logo, also based on the
   UCBLogo dialect.
+
 * Boxer_: an academic Logo, with novel ideas of program representation
   and IDE.  I personally find this language very interesting, and
   would love to see some of its ideas in PyLogo, or even better in
   Python itself.  The actual project seems to be inactive.
+
 * StarLogo_: an academic highly concurrent Logo programming (lots of
   independent turtles acting simultaneously)
+
 * StarLogoT_: an academic Logo language with an emphasis on
   concurrency and parallelism.  Seems like a more active offshoot of
   StarLogo.
+
 * NetLogo_: an academic Logo language oriented on concurrency and
   independent agents.  Related to StarLogoT. 
+
 * Elica_: an academic OO Logo, with strong graphics capabilities.  
+
 * aUCBLogo_: a fork of UCBLogo.
+
 * `Scheme Logo`_: a Logo interpreter written in Scheme.
+
 * `Logo in Scheme`_: a Logo to Scheme compiler (written by me).
+
 * TinyLogo_: Logo for the Palm.
+
 * rLogo_: Logo that can be distributed in applet form (as a special
   plugin; Turtle Tracks might actually be easier to distribute).
+
 * XLogo_, Mac OS X Logo (incomplete language?)
+
 * `Logo nyelv`_, Hungarian, written in Turbo Pascal, 
+
 * JavaLogo_, appears to be turtle graphics, without the Logo
   language.
+
 * MonoLOGO_: a .NET Logo implementation, seems focused on the language
   more than the graphics at this point.
+
 * SharpLOGO_: C# implementation, I believe just turtle graphics without
   the Logo language.
+
 * Galapago_: Java turtle graphics with an incomplete Logo language,
   focused on Fractals.
+
 * Tortue_, written in Java (incomplete language?)
+
 * `KLogo-Turtle`_: KDE turtle graphics, incomplete Logo language.
+
 * KTurtle_: related to KLogo-Turtle in some way; pretty new.
+
 * `Logo++`_: a C++ Logo-like language (with significant language
   changes)
 

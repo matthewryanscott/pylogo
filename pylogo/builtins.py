@@ -676,18 +676,21 @@ def readrawline():
         return v[:-1]
     except EOFError:
         return []
-                  
+
 # @@: readchars/rcs, shell
 
 ##############################
 ## File access
 
-# @@: all unimplemented
+## See pylogo.oobuiltins
 
 ##############################
 ## Terminal Access
 
 # @@: all unimplemented
+
+##############################
+## Arithmetic
 
 @logofunc(arity=2)
 def sum(*args):
@@ -1294,7 +1297,7 @@ def names(interp):
     no procedure names) followed by a list of all unburied variable
     names in the workspace.
     """
-    return interp.variableNames()
+    return interp.variable_names()
 
 # @@: plists, namelist, pllist, nodes
 
@@ -1319,7 +1322,7 @@ def erase(interp, l):
     if type(l) is str:
         l = [l]
     for n in l:
-        interp.eraseName(n)
+        interp.erase_name(n)
 
 @logofunc(aware=True)
 def erall(interp):
@@ -1388,8 +1391,19 @@ def logo_help(interp, name):
     command.  Prints information from the reference manual about the
     primitive procedure named by the input.
     """
-    func = interp.get_function(name)
-    print func.__doc__
+    try:
+        func = interp.get_function(name)
+    except NameError:
+        print "I don't know how  to %s" % name
+        return
+    doc = func.__doc__
+    if not doc:
+        print "No help available for %s" % name
+        return
+    import textwrap
+    doc = textwrap.dedent(doc).strip('\n\r')
+    print doc
+    
 
 # @@: gc
 
@@ -1934,3 +1948,4 @@ def logo_new(interp, cls):
 
 #def builtins_main(interp):
 #    logoImport(interp, 'pylogo.logo_turtle')
+

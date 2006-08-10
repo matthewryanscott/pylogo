@@ -17,32 +17,35 @@ Logo include property lists.)
 
 .. note::
    PyLogo can use and manipulate any Python data type, so the possible
-   number of types is much larger.
+   number of types is much larger.  Also, lists actually arrays
+   (Python's list type), and are mutable (though most of the Logo
+   builtins don't mutate the lists).  TRUE and FALSE are special
+   values.
 
-Data organization:  I'm not quite sure what you mean by this, but I'm
+Data organization: I'm not quite sure what you mean by this, but I'm
 guessing that you're asking about aggregate data types.  Logo's main
 types are word and list.  A word can be divided into characters, but
 "character" is not a separate data type -- they're just one-letter
 words.  A number is a special case of a word, although of course
-internally they're represented in a form that allows for fast arithmetic.
-Lists are just like Lisp lists: singly-linked.  Most versions of Logo
-do not allow list mutation (which is why property lists are important;
-those are mutable but not sharable).  Some versions of Logo, but not all,
-include arrays.  A few versions include objects (sometimes in the form
-of first-class turtles that can have local variables and/or methods).
-For some purposes, Logo recognizes the special case of a "sentence,"
-which is a (flat) list of words.  The words TRUE and FALSE serve as
-Booleans.
+internally they're represented in a form that allows for fast
+arithmetic.  Lists are just like Lisp lists: singly-linked.  Most
+versions of Logo do not allow list mutation (which is why property
+lists are important; those are mutable but not sharable).  Some
+versions of Logo, but not all, include arrays.  A few versions include
+objects (sometimes in the form of first-class turtles that can have
+local variables and/or methods).  For some purposes, Logo recognizes
+the special case of a "sentence," which is a (flat) list of words.
+The words TRUE and FALSE serve as Booleans.
 
-Syntactic structural organization:  There's no official BNF description
-of Logo, because there's too much variation among dialects, and most of
-us feel that allowing for experimentation is more important than
-uniformity, in a language that's never going to take over the world
-in any case!
+Syntactic structural organization: There's no official BNF description
+of Logo, because there's too much variation among dialects, and most
+of us feel that allowing for experimentation is more important than
+uniformity, in a language that's never going to take over the world in
+any case!
 
-Basically, everything is done with procedure calls.  There are no special
-forms except for TO, which is used to define procedures.  Quotation is
-similar in spirit to Lisp, but different in notation:
+Basically, everything is done with procedure calls.  There are no
+special forms except for TO, which is used to define procedures.
+Quotation is similar in spirit to Lisp, but different in notation:
 
 .. note::
    PyLogo doesn't have a string literal representation currently,
@@ -105,7 +108,7 @@ a few also allow variants such as::
    PyLogo always allows rest args, and puts them in a special
    ``:REST`` variable.  If a variable is omitted, it is always set to
    None.  This will probably change in the future.  The trailing
-   integer form is allowed.
+   integer form is allowed.  ``num`` and ``"num`` are also allowed.
 
 Some dialects allow optional and rest args::
 

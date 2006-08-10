@@ -10,14 +10,19 @@ from cStringIO import StringIO
 import reader
 import interpreter
 from pylogo import builtins
+from pylogo import oobuiltins
 
 def testfile(filename, globs=None, name=None,
              verbose=None, optionflags=0,
-             report=True, master=None):
+             report=True, master=None,
+             interp=None,
+             verbose_summary=False):
     if globs is None:
         globs = {}
-    interp = interpreter.RootFrame()
-    interp.import_module(builtins)
+    if interp is None:
+        interp = interpreter.RootFrame()
+        interp.import_module(builtins)
+        interp.import_module(oobuiltins)
     interp.vars.update(globs)
     if name is None:
         name = os.path.basename(filename)
@@ -29,7 +34,7 @@ def testfile(filename, globs=None, name=None,
                               filename, 0)
     runner.run(test)
     if report:
-        runner.summarize()
+        runner.summarize(verbose or verbose_summary)
     if master is None:
         master = runner
     else:
