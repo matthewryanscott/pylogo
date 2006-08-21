@@ -11,7 +11,7 @@ except ImportError:
         DistributionMetadata.classifiers = None
         DistributionMetadata.download_url = None
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 setup(name="PyLogo",
       version=__version__,
