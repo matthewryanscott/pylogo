@@ -5,6 +5,9 @@ PyLogo
 News
 ----
 
+21 Aug 2006:
+    0.3 version released
+
 14 Apr 2006:
     0.2 version released
 
@@ -27,7 +30,13 @@ design choices are driven by this, and differ from Python.
 For more, read the documentation:
 
 * `Main docs <PyLogo.html>`_
+
 * `Description of the Logo Language <LogoLanguage.html>`_
+
+* `Internal API <api.html>`_ (for people integrating PyLogo into
+  Python environments)
+
+* `To-Do <TODO.html>`_
 
 Download
 --------
@@ -48,6 +57,5 @@ Contact
 PyLogo has a mailing list at pylogo-discuss@lists.sf.net -- `subscribe
 here <http://lists.sourceforge.net/lists/listinfo/pylogo-discuss>`_.
 
-Please report any bugs via the bug tracker.
+    -- Ian Bicking <ianb@colorstudy.com>
 
-    -- Ian Bicking <ianb@colorstudy.com

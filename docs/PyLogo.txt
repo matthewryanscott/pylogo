@@ -184,7 +184,7 @@ In all cases ``:VAR`` means ``:var``, ``"var`` or simply ``var``.
 
 * ``MAKE :VAR <value>``
 
-* ``LOCALMAKE :VAR ...
+* ``LOCALMAKE :VAR ...``
 
 * ``LOCAL :VAR <more vars...>``
 
