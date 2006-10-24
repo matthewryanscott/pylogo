@@ -10,11 +10,18 @@ from ide import add_command, get_canvas
 class Turtle:
 
     _all_turtles = []
+    _turtle_count = 1
 
     def __init__(self):
         self.pen = turtle.RawPen(get_canvas())
         self.pen.degrees()
         self._all_turtles.append(weakref.ref(self))
+        self._count = self._turtle_count
+        self.__class__._turtle_count += 1
+
+    def __repr__(self):
+        return '<%s %i>' % (self.__class__.__name__,
+                            self._count)
 
     @logofunc()
     def turtle(self):

@@ -216,7 +216,7 @@ class Interpreter(object):
         elif tok is EOF:
             raise LogoEndOfCode("The end of the code block was not expected")
 
-        elif type(tok) is not str:
+        elif not isinstance(tok, basestring):
             # Some other fundamental type (usually int or float)
             return tok
 
@@ -420,7 +420,7 @@ class Interpreter(object):
                     val = self.eval(block)
                 except LogoContinue:
                     pass
-        except LogoStop:
+        except LogoBreak:
             pass
         return val
 
@@ -430,8 +430,12 @@ class Interpreter(object):
     def special_tell(self, greedy):
         obj = self.expr()
         tok = self.tokenizer.peek()
-        if tok == '[':
-            block = self.expr()
+        if tok == '[' or isinstance(tok, list):
+            if tok == '[':
+                block = self.expr()
+            else:
+                block = tok
+                self.tokenizer.next()
             interp = self.new()
             interp.push_actor(obj)
             try:
@@ -658,7 +662,10 @@ class Interpreter(object):
                 try:
                     v = self.expr_top()
                 except LogoError, e:
-                    print e.description, ':', e
+                    if str(e) != str(e.description):
+                        print e.description, ':', e
+                    else:
+                        print e
                     v = None
                 except KeyboardInterrupt:
                     if tokenizer.context:
