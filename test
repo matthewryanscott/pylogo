@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export NOSE_WITH_DOCTEST=t
+export NOSE_DOCTEST_EXTENSION=txt
+export NOSE_WITH_MISSED_TESTS=t
+export NOSE_DOCTEST_TESTS=t
+export NOSE_DETAILED_ERRORS=t
+
+nosetests --stop $*

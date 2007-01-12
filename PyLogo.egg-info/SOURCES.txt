@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+PyLogo2.egg-info/PKG-INFO
+PyLogo2.egg-info/SOURCES.txt
+PyLogo2.egg-info/dependency_links.txt
+PyLogo2.egg-info/entry_points.txt
+PyLogo2.egg-info/not-zip-safe
+PyLogo2.egg-info/top_level.txt
+pylogo2/__init__.py

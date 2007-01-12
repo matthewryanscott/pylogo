@@ -1,0 +1,48 @@
+from pyparsing import Word, alphas, Optional
+
+expr = inner_expr + Optional(operator + inner_expr)
+
+inner_expr = (number |
+              (Literal('-') + expr) |
+              (Literal('+') + expr) |
+              (Literal('"') + word) |
+              (Literal('quote') + word) |
+              (Literal(":") + word) |
+              (Literal("to") + to_expression) |
+              list_expression |
+              (word + expr *))
+
+variable_reference = Literal(":") + word.setResultsName('variable')
+
+
+
+number = Word(numbers)
+word = Word(alpha)
+list_expression = 
+
+
+
+instruction = ((command_name + expression *) |
+               (Literal("(") + command_name + expression * Literal(")")))
+
+expression = ((operation_name expression *) |
+              list_literal |
+              quoted_word |
+              number |
+              variable_ref |
+              Literal("(") + expression + Literal(")"))
+
+list_literal = Literal("[") + list_element * + Literal("]")
+
+quoted_word = Literal('"') + word
+
+list_element = list_literal | word
+
+word = Word(alpha+num+punctuation)
+
+variable_ref = Literal(":") + word
+
+to_header = Literal("to") + word + variable_ref * + default
+to_statement = to_header + (intruction *) + Literal("end")
+
+

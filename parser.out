@@ -1,0 +1,1397 @@
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 14 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 35 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+shift/reduce conflict in state 44 resolved as shift.
+
+
+Unused terminals:
+
+
+Grammar
+
+Rule 1     program -> expression NEWLINE program
+Rule 2     program -> statement_to NEWLINE program
+Rule 3     program -> expression
+Rule 4     program -> statement_to
+Rule 5     statement_to -> TO NAME to_args NEWLINE expression NEWLINE END
+Rule 6     to_args -> var_spec to_args
+Rule 7     to_args -> var_spec
+Rule 8     var_spec -> COLON NAME
+Rule 9     var_spec -> QUOTE NAME
+Rule 10    var_spec -> NAME
+Rule 11    expression -> expression expression
+Rule 12    expression -> NAME expression
+Rule 13    expression -> expression operator expression
+Rule 14    expression -> LPAREN expression RPAREN
+Rule 15    expression -> LBRACKET expression RBRACKET
+Rule 16    expression -> value
+Rule 17    expression -> variable
+Rule 18    value -> string
+Rule 19    value -> NUMBER
+Rule 20    string -> QUOTE NAME
+Rule 21    string -> QUOTE TO
+Rule 22    string -> QUOTE END
+Rule 23    variable -> COLON NAME
+Rule 24    operator -> PLUS
+Rule 25    operator -> MINUS
+Rule 26    operator -> TIMES
+Rule 27    operator -> DIVIDE
+Rule 28    operator -> GREATER_EQUAL
+Rule 29    operator -> LESS_EQUAL
+Rule 30    operator -> GREATER
+Rule 31    operator -> LESS
+Rule 32    operator -> NOT_EQUAL
+Rule 33    operator -> EQUAL
+
+Terminals, with rules where they appear
+
+COLON                : 8 23
+DIVIDE               : 27
+END                  : 5 22
+EQUAL                : 33
+GREATER              : 30
+GREATER_EQUAL        : 28
+LBRACKET             : 15
+LESS                 : 31
+LESS_EQUAL           : 29
+LPAREN               : 14
+MINUS                : 25
+NAME                 : 5 8 9 10 12 20 23
+NEWLINE              : 1 2 5 5
+NOT_EQUAL            : 32
+NUMBER               : 19
+PLUS                 : 24
+QUOTE                : 9 20 21 22
+RBRACKET             : 15
+RPAREN               : 14
+TIMES                : 26
+TO                   : 5 21
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 1 3 5 11 11 12 13 13 14 15
+operator             : 13
+program              : 1 2 0
+statement_to         : 2 4
+string               : 18
+to_args              : 5 6
+value                : 16
+var_spec             : 6 7
+variable             : 17
+
+
+Parsing method: LALR
+
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . expression NEWLINE program
+    (2) program -> . statement_to NEWLINE program
+    (3) program -> . expression
+    (4) program -> . statement_to
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (5) statement_to -> . TO NAME to_args NEWLINE expression NEWLINE END
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    TO              shift and go to state 2
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    program                        shift and go to state 8
+    statement_to                   shift and go to state 10
+    expression                     shift and go to state 12
+
+state 1
+
+    (12) expression -> NAME . expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    variable                       shift and go to state 7
+    expression                     shift and go to state 14
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 2
+
+    (5) statement_to -> TO . NAME to_args NEWLINE expression NEWLINE END
+
+    NAME            shift and go to state 15
+
+
+
+state 3
+
+    (20) string -> QUOTE . NAME
+    (21) string -> QUOTE . TO
+    (22) string -> QUOTE . END
+
+    NAME            shift and go to state 17
+    TO              shift and go to state 18
+    END             shift and go to state 16
+
+
+
+state 4
+
+    (19) value -> NUMBER .
+
+    NAME            reduce using rule 19 (value -> NUMBER .)
+    LPAREN          reduce using rule 19 (value -> NUMBER .)
+    LBRACKET        reduce using rule 19 (value -> NUMBER .)
+    PLUS            reduce using rule 19 (value -> NUMBER .)
+    MINUS           reduce using rule 19 (value -> NUMBER .)
+    TIMES           reduce using rule 19 (value -> NUMBER .)
+    DIVIDE          reduce using rule 19 (value -> NUMBER .)
+    GREATER_EQUAL   reduce using rule 19 (value -> NUMBER .)
+    LESS_EQUAL      reduce using rule 19 (value -> NUMBER .)
+    GREATER         reduce using rule 19 (value -> NUMBER .)
+    LESS            reduce using rule 19 (value -> NUMBER .)
+    NOT_EQUAL       reduce using rule 19 (value -> NUMBER .)
+    EQUAL           reduce using rule 19 (value -> NUMBER .)
+    NUMBER          reduce using rule 19 (value -> NUMBER .)
+    COLON           reduce using rule 19 (value -> NUMBER .)
+    QUOTE           reduce using rule 19 (value -> NUMBER .)
+    NEWLINE         reduce using rule 19 (value -> NUMBER .)
+    RBRACKET        reduce using rule 19 (value -> NUMBER .)
+    RPAREN          reduce using rule 19 (value -> NUMBER .)
+    $end            reduce using rule 19 (value -> NUMBER .)
+
+
+
+state 5
+
+    (16) expression -> value .
+
+    NEWLINE         reduce using rule 16 (expression -> value .)
+    NAME            reduce using rule 16 (expression -> value .)
+    LPAREN          reduce using rule 16 (expression -> value .)
+    LBRACKET        reduce using rule 16 (expression -> value .)
+    PLUS            reduce using rule 16 (expression -> value .)
+    MINUS           reduce using rule 16 (expression -> value .)
+    TIMES           reduce using rule 16 (expression -> value .)
+    DIVIDE          reduce using rule 16 (expression -> value .)
+    GREATER_EQUAL   reduce using rule 16 (expression -> value .)
+    LESS_EQUAL      reduce using rule 16 (expression -> value .)
+    GREATER         reduce using rule 16 (expression -> value .)
+    LESS            reduce using rule 16 (expression -> value .)
+    NOT_EQUAL       reduce using rule 16 (expression -> value .)
+    EQUAL           reduce using rule 16 (expression -> value .)
+    NUMBER          reduce using rule 16 (expression -> value .)
+    COLON           reduce using rule 16 (expression -> value .)
+    QUOTE           reduce using rule 16 (expression -> value .)
+    RPAREN          reduce using rule 16 (expression -> value .)
+    $end            reduce using rule 16 (expression -> value .)
+    RBRACKET        reduce using rule 16 (expression -> value .)
+
+
+
+state 6
+
+    (15) expression -> LBRACKET . expression RBRACKET
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    variable                       shift and go to state 7
+    expression                     shift and go to state 19
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 7
+
+    (17) expression -> variable .
+
+    NEWLINE         reduce using rule 17 (expression -> variable .)
+    NAME            reduce using rule 17 (expression -> variable .)
+    LPAREN          reduce using rule 17 (expression -> variable .)
+    LBRACKET        reduce using rule 17 (expression -> variable .)
+    PLUS            reduce using rule 17 (expression -> variable .)
+    MINUS           reduce using rule 17 (expression -> variable .)
+    TIMES           reduce using rule 17 (expression -> variable .)
+    DIVIDE          reduce using rule 17 (expression -> variable .)
+    GREATER_EQUAL   reduce using rule 17 (expression -> variable .)
+    LESS_EQUAL      reduce using rule 17 (expression -> variable .)
+    GREATER         reduce using rule 17 (expression -> variable .)
+    LESS            reduce using rule 17 (expression -> variable .)
+    NOT_EQUAL       reduce using rule 17 (expression -> variable .)
+    EQUAL           reduce using rule 17 (expression -> variable .)
+    NUMBER          reduce using rule 17 (expression -> variable .)
+    COLON           reduce using rule 17 (expression -> variable .)
+    QUOTE           reduce using rule 17 (expression -> variable .)
+    RPAREN          reduce using rule 17 (expression -> variable .)
+    $end            reduce using rule 17 (expression -> variable .)
+    RBRACKET        reduce using rule 17 (expression -> variable .)
+
+
+
+state 8
+
+    (0) S' -> program .
+
+
+
+
+state 9
+
+    (23) variable -> COLON . NAME
+
+    NAME            shift and go to state 20
+
+
+
+state 10
+
+    (2) program -> statement_to . NEWLINE program
+    (4) program -> statement_to .
+
+    NEWLINE         shift and go to state 21
+    $end            reduce using rule 4 (program -> statement_to .)
+
+
+
+state 11
+
+    (14) expression -> LPAREN . expression RPAREN
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    variable                       shift and go to state 7
+    expression                     shift and go to state 22
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 12
+
+    (1) program -> expression . NEWLINE program
+    (3) program -> expression .
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NEWLINE         shift and go to state 30
+    $end            reduce using rule 3 (program -> expression .)
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    operator                       shift and go to state 25
+    expression                     shift and go to state 35
+
+state 13
+
+    (18) value -> string .
+
+    NAME            reduce using rule 18 (value -> string .)
+    LPAREN          reduce using rule 18 (value -> string .)
+    LBRACKET        reduce using rule 18 (value -> string .)
+    PLUS            reduce using rule 18 (value -> string .)
+    MINUS           reduce using rule 18 (value -> string .)
+    TIMES           reduce using rule 18 (value -> string .)
+    DIVIDE          reduce using rule 18 (value -> string .)
+    GREATER_EQUAL   reduce using rule 18 (value -> string .)
+    LESS_EQUAL      reduce using rule 18 (value -> string .)
+    GREATER         reduce using rule 18 (value -> string .)
+    LESS            reduce using rule 18 (value -> string .)
+    NOT_EQUAL       reduce using rule 18 (value -> string .)
+    EQUAL           reduce using rule 18 (value -> string .)
+    NUMBER          reduce using rule 18 (value -> string .)
+    COLON           reduce using rule 18 (value -> string .)
+    QUOTE           reduce using rule 18 (value -> string .)
+    NEWLINE         reduce using rule 18 (value -> string .)
+    RBRACKET        reduce using rule 18 (value -> string .)
+    RPAREN          reduce using rule 18 (value -> string .)
+    $end            reduce using rule 18 (value -> string .)
+
+
+
+state 14
+
+    (12) expression -> NAME expression .
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+  ! shift/reduce conflict for NAME resolved as shift.
+  ! shift/reduce conflict for LPAREN resolved as shift.
+  ! shift/reduce conflict for LBRACKET resolved as shift.
+  ! shift/reduce conflict for NUMBER resolved as shift.
+  ! shift/reduce conflict for COLON resolved as shift.
+  ! shift/reduce conflict for QUOTE resolved as shift.
+    NEWLINE         reduce using rule 12 (expression -> NAME expression .)
+    RPAREN          reduce using rule 12 (expression -> NAME expression .)
+    $end            reduce using rule 12 (expression -> NAME expression .)
+    RBRACKET        reduce using rule 12 (expression -> NAME expression .)
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+  ! NAME            [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! LPAREN          [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! LBRACKET        [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! PLUS            [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! MINUS           [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! TIMES           [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! DIVIDE          [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! GREATER_EQUAL   [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! LESS_EQUAL      [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! GREATER         [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! LESS            [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! NOT_EQUAL       [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! EQUAL           [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! NUMBER          [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! COLON           [ reduce using rule 12 (expression -> NAME expression .) ]
+  ! QUOTE           [ reduce using rule 12 (expression -> NAME expression .) ]
+
+    operator                       shift and go to state 25
+    variable                       shift and go to state 7
+    expression                     shift and go to state 35
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 15
+
+    (5) statement_to -> TO NAME . to_args NEWLINE expression NEWLINE END
+    (6) to_args -> . var_spec to_args
+    (7) to_args -> . var_spec
+    (8) var_spec -> . COLON NAME
+    (9) var_spec -> . QUOTE NAME
+    (10) var_spec -> . NAME
+
+    COLON           shift and go to state 39
+    QUOTE           shift and go to state 38
+    NAME            shift and go to state 36
+
+
+    to_args                        shift and go to state 37
+    var_spec                       shift and go to state 40
+
+state 16
+
+    (22) string -> QUOTE END .
+
+    NEWLINE         reduce using rule 22 (string -> QUOTE END .)
+    NAME            reduce using rule 22 (string -> QUOTE END .)
+    LPAREN          reduce using rule 22 (string -> QUOTE END .)
+    LBRACKET        reduce using rule 22 (string -> QUOTE END .)
+    PLUS            reduce using rule 22 (string -> QUOTE END .)
+    MINUS           reduce using rule 22 (string -> QUOTE END .)
+    TIMES           reduce using rule 22 (string -> QUOTE END .)
+    DIVIDE          reduce using rule 22 (string -> QUOTE END .)
+    GREATER_EQUAL   reduce using rule 22 (string -> QUOTE END .)
+    LESS_EQUAL      reduce using rule 22 (string -> QUOTE END .)
+    GREATER         reduce using rule 22 (string -> QUOTE END .)
+    LESS            reduce using rule 22 (string -> QUOTE END .)
+    NOT_EQUAL       reduce using rule 22 (string -> QUOTE END .)
+    EQUAL           reduce using rule 22 (string -> QUOTE END .)
+    NUMBER          reduce using rule 22 (string -> QUOTE END .)
+    COLON           reduce using rule 22 (string -> QUOTE END .)
+    QUOTE           reduce using rule 22 (string -> QUOTE END .)
+    $end            reduce using rule 22 (string -> QUOTE END .)
+    RBRACKET        reduce using rule 22 (string -> QUOTE END .)
+    RPAREN          reduce using rule 22 (string -> QUOTE END .)
+
+
+
+state 17
+
+    (20) string -> QUOTE NAME .
+
+    NEWLINE         reduce using rule 20 (string -> QUOTE NAME .)
+    NAME            reduce using rule 20 (string -> QUOTE NAME .)
+    LPAREN          reduce using rule 20 (string -> QUOTE NAME .)
+    LBRACKET        reduce using rule 20 (string -> QUOTE NAME .)
+    PLUS            reduce using rule 20 (string -> QUOTE NAME .)
+    MINUS           reduce using rule 20 (string -> QUOTE NAME .)
+    TIMES           reduce using rule 20 (string -> QUOTE NAME .)
+    DIVIDE          reduce using rule 20 (string -> QUOTE NAME .)
+    GREATER_EQUAL   reduce using rule 20 (string -> QUOTE NAME .)
+    LESS_EQUAL      reduce using rule 20 (string -> QUOTE NAME .)
+    GREATER         reduce using rule 20 (string -> QUOTE NAME .)
+    LESS            reduce using rule 20 (string -> QUOTE NAME .)
+    NOT_EQUAL       reduce using rule 20 (string -> QUOTE NAME .)
+    EQUAL           reduce using rule 20 (string -> QUOTE NAME .)
+    NUMBER          reduce using rule 20 (string -> QUOTE NAME .)
+    COLON           reduce using rule 20 (string -> QUOTE NAME .)
+    QUOTE           reduce using rule 20 (string -> QUOTE NAME .)
+    $end            reduce using rule 20 (string -> QUOTE NAME .)
+    RBRACKET        reduce using rule 20 (string -> QUOTE NAME .)
+    RPAREN          reduce using rule 20 (string -> QUOTE NAME .)
+
+
+
+state 18
+
+    (21) string -> QUOTE TO .
+
+    NEWLINE         reduce using rule 21 (string -> QUOTE TO .)
+    NAME            reduce using rule 21 (string -> QUOTE TO .)
+    LPAREN          reduce using rule 21 (string -> QUOTE TO .)
+    LBRACKET        reduce using rule 21 (string -> QUOTE TO .)
+    PLUS            reduce using rule 21 (string -> QUOTE TO .)
+    MINUS           reduce using rule 21 (string -> QUOTE TO .)
+    TIMES           reduce using rule 21 (string -> QUOTE TO .)
+    DIVIDE          reduce using rule 21 (string -> QUOTE TO .)
+    GREATER_EQUAL   reduce using rule 21 (string -> QUOTE TO .)
+    LESS_EQUAL      reduce using rule 21 (string -> QUOTE TO .)
+    GREATER         reduce using rule 21 (string -> QUOTE TO .)
+    LESS            reduce using rule 21 (string -> QUOTE TO .)
+    NOT_EQUAL       reduce using rule 21 (string -> QUOTE TO .)
+    EQUAL           reduce using rule 21 (string -> QUOTE TO .)
+    NUMBER          reduce using rule 21 (string -> QUOTE TO .)
+    COLON           reduce using rule 21 (string -> QUOTE TO .)
+    QUOTE           reduce using rule 21 (string -> QUOTE TO .)
+    $end            reduce using rule 21 (string -> QUOTE TO .)
+    RBRACKET        reduce using rule 21 (string -> QUOTE TO .)
+    RPAREN          reduce using rule 21 (string -> QUOTE TO .)
+
+
+
+state 19
+
+    (15) expression -> LBRACKET expression . RBRACKET
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    RBRACKET        shift and go to state 41
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    operator                       shift and go to state 25
+    variable                       shift and go to state 7
+    expression                     shift and go to state 35
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 20
+
+    (23) variable -> COLON NAME .
+
+    NAME            reduce using rule 23 (variable -> COLON NAME .)
+    LPAREN          reduce using rule 23 (variable -> COLON NAME .)
+    LBRACKET        reduce using rule 23 (variable -> COLON NAME .)
+    PLUS            reduce using rule 23 (variable -> COLON NAME .)
+    MINUS           reduce using rule 23 (variable -> COLON NAME .)
+    TIMES           reduce using rule 23 (variable -> COLON NAME .)
+    DIVIDE          reduce using rule 23 (variable -> COLON NAME .)
+    GREATER_EQUAL   reduce using rule 23 (variable -> COLON NAME .)
+    LESS_EQUAL      reduce using rule 23 (variable -> COLON NAME .)
+    GREATER         reduce using rule 23 (variable -> COLON NAME .)
+    LESS            reduce using rule 23 (variable -> COLON NAME .)
+    NOT_EQUAL       reduce using rule 23 (variable -> COLON NAME .)
+    EQUAL           reduce using rule 23 (variable -> COLON NAME .)
+    NUMBER          reduce using rule 23 (variable -> COLON NAME .)
+    COLON           reduce using rule 23 (variable -> COLON NAME .)
+    QUOTE           reduce using rule 23 (variable -> COLON NAME .)
+    NEWLINE         reduce using rule 23 (variable -> COLON NAME .)
+    $end            reduce using rule 23 (variable -> COLON NAME .)
+    RBRACKET        reduce using rule 23 (variable -> COLON NAME .)
+    RPAREN          reduce using rule 23 (variable -> COLON NAME .)
+
+
+
+state 21
+
+    (2) program -> statement_to NEWLINE . program
+    (1) program -> . expression NEWLINE program
+    (2) program -> . statement_to NEWLINE program
+    (3) program -> . expression
+    (4) program -> . statement_to
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (5) statement_to -> . TO NAME to_args NEWLINE expression NEWLINE END
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    TO              shift and go to state 2
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    program                        shift and go to state 42
+    statement_to                   shift and go to state 10
+    expression                     shift and go to state 12
+
+state 22
+
+    (14) expression -> LPAREN expression . RPAREN
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    RPAREN          shift and go to state 43
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    operator                       shift and go to state 25
+    variable                       shift and go to state 7
+    expression                     shift and go to state 35
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 23
+
+    (31) operator -> LESS .
+
+    NAME            reduce using rule 31 (operator -> LESS .)
+    LPAREN          reduce using rule 31 (operator -> LESS .)
+    LBRACKET        reduce using rule 31 (operator -> LESS .)
+    NUMBER          reduce using rule 31 (operator -> LESS .)
+    COLON           reduce using rule 31 (operator -> LESS .)
+    QUOTE           reduce using rule 31 (operator -> LESS .)
+
+
+
+state 24
+
+    (33) operator -> EQUAL .
+
+    NAME            reduce using rule 33 (operator -> EQUAL .)
+    LPAREN          reduce using rule 33 (operator -> EQUAL .)
+    LBRACKET        reduce using rule 33 (operator -> EQUAL .)
+    NUMBER          reduce using rule 33 (operator -> EQUAL .)
+    COLON           reduce using rule 33 (operator -> EQUAL .)
+    QUOTE           reduce using rule 33 (operator -> EQUAL .)
+
+
+
+state 25
+
+    (13) expression -> expression operator . expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    variable                       shift and go to state 7
+    expression                     shift and go to state 44
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 26
+
+    (25) operator -> MINUS .
+
+    NAME            reduce using rule 25 (operator -> MINUS .)
+    LPAREN          reduce using rule 25 (operator -> MINUS .)
+    LBRACKET        reduce using rule 25 (operator -> MINUS .)
+    NUMBER          reduce using rule 25 (operator -> MINUS .)
+    COLON           reduce using rule 25 (operator -> MINUS .)
+    QUOTE           reduce using rule 25 (operator -> MINUS .)
+
+
+
+state 27
+
+    (27) operator -> DIVIDE .
+
+    NAME            reduce using rule 27 (operator -> DIVIDE .)
+    LPAREN          reduce using rule 27 (operator -> DIVIDE .)
+    LBRACKET        reduce using rule 27 (operator -> DIVIDE .)
+    NUMBER          reduce using rule 27 (operator -> DIVIDE .)
+    COLON           reduce using rule 27 (operator -> DIVIDE .)
+    QUOTE           reduce using rule 27 (operator -> DIVIDE .)
+
+
+
+state 28
+
+    (32) operator -> NOT_EQUAL .
+
+    NAME            reduce using rule 32 (operator -> NOT_EQUAL .)
+    LPAREN          reduce using rule 32 (operator -> NOT_EQUAL .)
+    LBRACKET        reduce using rule 32 (operator -> NOT_EQUAL .)
+    NUMBER          reduce using rule 32 (operator -> NOT_EQUAL .)
+    COLON           reduce using rule 32 (operator -> NOT_EQUAL .)
+    QUOTE           reduce using rule 32 (operator -> NOT_EQUAL .)
+
+
+
+state 29
+
+    (28) operator -> GREATER_EQUAL .
+
+    NAME            reduce using rule 28 (operator -> GREATER_EQUAL .)
+    LPAREN          reduce using rule 28 (operator -> GREATER_EQUAL .)
+    LBRACKET        reduce using rule 28 (operator -> GREATER_EQUAL .)
+    NUMBER          reduce using rule 28 (operator -> GREATER_EQUAL .)
+    COLON           reduce using rule 28 (operator -> GREATER_EQUAL .)
+    QUOTE           reduce using rule 28 (operator -> GREATER_EQUAL .)
+
+
+
+state 30
+
+    (1) program -> expression NEWLINE . program
+    (1) program -> . expression NEWLINE program
+    (2) program -> . statement_to NEWLINE program
+    (3) program -> . expression
+    (4) program -> . statement_to
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (5) statement_to -> . TO NAME to_args NEWLINE expression NEWLINE END
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    TO              shift and go to state 2
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    program                        shift and go to state 45
+    statement_to                   shift and go to state 10
+    expression                     shift and go to state 12
+
+state 31
+
+    (24) operator -> PLUS .
+
+    NAME            reduce using rule 24 (operator -> PLUS .)
+    LPAREN          reduce using rule 24 (operator -> PLUS .)
+    LBRACKET        reduce using rule 24 (operator -> PLUS .)
+    NUMBER          reduce using rule 24 (operator -> PLUS .)
+    COLON           reduce using rule 24 (operator -> PLUS .)
+    QUOTE           reduce using rule 24 (operator -> PLUS .)
+
+
+
+state 32
+
+    (26) operator -> TIMES .
+
+    NAME            reduce using rule 26 (operator -> TIMES .)
+    LPAREN          reduce using rule 26 (operator -> TIMES .)
+    LBRACKET        reduce using rule 26 (operator -> TIMES .)
+    NUMBER          reduce using rule 26 (operator -> TIMES .)
+    COLON           reduce using rule 26 (operator -> TIMES .)
+    QUOTE           reduce using rule 26 (operator -> TIMES .)
+
+
+
+state 33
+
+    (29) operator -> LESS_EQUAL .
+
+    NAME            reduce using rule 29 (operator -> LESS_EQUAL .)
+    LPAREN          reduce using rule 29 (operator -> LESS_EQUAL .)
+    LBRACKET        reduce using rule 29 (operator -> LESS_EQUAL .)
+    NUMBER          reduce using rule 29 (operator -> LESS_EQUAL .)
+    COLON           reduce using rule 29 (operator -> LESS_EQUAL .)
+    QUOTE           reduce using rule 29 (operator -> LESS_EQUAL .)
+
+
+
+state 34
+
+    (30) operator -> GREATER .
+
+    NAME            reduce using rule 30 (operator -> GREATER .)
+    LPAREN          reduce using rule 30 (operator -> GREATER .)
+    LBRACKET        reduce using rule 30 (operator -> GREATER .)
+    NUMBER          reduce using rule 30 (operator -> GREATER .)
+    COLON           reduce using rule 30 (operator -> GREATER .)
+    QUOTE           reduce using rule 30 (operator -> GREATER .)
+
+
+
+state 35
+
+    (11) expression -> expression expression .
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+  ! shift/reduce conflict for NAME resolved as shift.
+  ! shift/reduce conflict for LPAREN resolved as shift.
+  ! shift/reduce conflict for LBRACKET resolved as shift.
+  ! shift/reduce conflict for NUMBER resolved as shift.
+  ! shift/reduce conflict for COLON resolved as shift.
+  ! shift/reduce conflict for QUOTE resolved as shift.
+    NEWLINE         reduce using rule 11 (expression -> expression expression .)
+    RPAREN          reduce using rule 11 (expression -> expression expression .)
+    $end            reduce using rule 11 (expression -> expression expression .)
+    RBRACKET        reduce using rule 11 (expression -> expression expression .)
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+  ! NAME            [ reduce using rule 11 (expression -> expression expression .) ]
+  ! LPAREN          [ reduce using rule 11 (expression -> expression expression .) ]
+  ! LBRACKET        [ reduce using rule 11 (expression -> expression expression .) ]
+  ! PLUS            [ reduce using rule 11 (expression -> expression expression .) ]
+  ! MINUS           [ reduce using rule 11 (expression -> expression expression .) ]
+  ! TIMES           [ reduce using rule 11 (expression -> expression expression .) ]
+  ! DIVIDE          [ reduce using rule 11 (expression -> expression expression .) ]
+  ! GREATER_EQUAL   [ reduce using rule 11 (expression -> expression expression .) ]
+  ! LESS_EQUAL      [ reduce using rule 11 (expression -> expression expression .) ]
+  ! GREATER         [ reduce using rule 11 (expression -> expression expression .) ]
+  ! LESS            [ reduce using rule 11 (expression -> expression expression .) ]
+  ! NOT_EQUAL       [ reduce using rule 11 (expression -> expression expression .) ]
+  ! EQUAL           [ reduce using rule 11 (expression -> expression expression .) ]
+  ! NUMBER          [ reduce using rule 11 (expression -> expression expression .) ]
+  ! COLON           [ reduce using rule 11 (expression -> expression expression .) ]
+  ! QUOTE           [ reduce using rule 11 (expression -> expression expression .) ]
+
+    operator                       shift and go to state 25
+    variable                       shift and go to state 7
+    expression                     shift and go to state 35
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 36
+
+    (10) var_spec -> NAME .
+
+    COLON           reduce using rule 10 (var_spec -> NAME .)
+    QUOTE           reduce using rule 10 (var_spec -> NAME .)
+    NAME            reduce using rule 10 (var_spec -> NAME .)
+    NEWLINE         reduce using rule 10 (var_spec -> NAME .)
+
+
+
+state 37
+
+    (5) statement_to -> TO NAME to_args . NEWLINE expression NEWLINE END
+
+    NEWLINE         shift and go to state 46
+
+
+
+state 38
+
+    (9) var_spec -> QUOTE . NAME
+
+    NAME            shift and go to state 47
+
+
+
+state 39
+
+    (8) var_spec -> COLON . NAME
+
+    NAME            shift and go to state 48
+
+
+
+state 40
+
+    (6) to_args -> var_spec . to_args
+    (7) to_args -> var_spec .
+    (6) to_args -> . var_spec to_args
+    (7) to_args -> . var_spec
+    (8) var_spec -> . COLON NAME
+    (9) var_spec -> . QUOTE NAME
+    (10) var_spec -> . NAME
+
+    NEWLINE         reduce using rule 7 (to_args -> var_spec .)
+    COLON           shift and go to state 39
+    QUOTE           shift and go to state 38
+    NAME            shift and go to state 36
+
+
+    to_args                        shift and go to state 49
+    var_spec                       shift and go to state 40
+
+state 41
+
+    (15) expression -> LBRACKET expression RBRACKET .
+
+    NEWLINE         reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    NAME            reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    LPAREN          reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    LBRACKET        reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    PLUS            reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    MINUS           reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    TIMES           reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    DIVIDE          reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    GREATER_EQUAL   reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    LESS_EQUAL      reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    GREATER         reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    LESS            reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    NOT_EQUAL       reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    EQUAL           reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    NUMBER          reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    COLON           reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    QUOTE           reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    RPAREN          reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    $end            reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+    RBRACKET        reduce using rule 15 (expression -> LBRACKET expression RBRACKET .)
+
+
+
+state 42
+
+    (2) program -> statement_to NEWLINE program .
+
+    $end            reduce using rule 2 (program -> statement_to NEWLINE program .)
+
+
+
+state 43
+
+    (14) expression -> LPAREN expression RPAREN .
+
+    NEWLINE         reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    NAME            reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    LPAREN          reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    LBRACKET        reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    TIMES           reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    GREATER_EQUAL   reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    LESS_EQUAL      reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    GREATER         reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    LESS            reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    NOT_EQUAL       reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    EQUAL           reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    NUMBER          reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    COLON           reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    QUOTE           reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+    RBRACKET        reduce using rule 14 (expression -> LPAREN expression RPAREN .)
+
+
+
+state 44
+
+    (13) expression -> expression operator expression .
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+  ! shift/reduce conflict for NAME resolved as shift.
+  ! shift/reduce conflict for LPAREN resolved as shift.
+  ! shift/reduce conflict for LBRACKET resolved as shift.
+  ! shift/reduce conflict for NUMBER resolved as shift.
+  ! shift/reduce conflict for COLON resolved as shift.
+  ! shift/reduce conflict for QUOTE resolved as shift.
+    NEWLINE         reduce using rule 13 (expression -> expression operator expression .)
+    RPAREN          reduce using rule 13 (expression -> expression operator expression .)
+    $end            reduce using rule 13 (expression -> expression operator expression .)
+    RBRACKET        reduce using rule 13 (expression -> expression operator expression .)
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+  ! NAME            [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! LPAREN          [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! LBRACKET        [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! PLUS            [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! MINUS           [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! TIMES           [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! DIVIDE          [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! GREATER_EQUAL   [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! LESS_EQUAL      [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! GREATER         [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! LESS            [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! NOT_EQUAL       [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! EQUAL           [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! NUMBER          [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! COLON           [ reduce using rule 13 (expression -> expression operator expression .) ]
+  ! QUOTE           [ reduce using rule 13 (expression -> expression operator expression .) ]
+
+    operator                       shift and go to state 25
+    variable                       shift and go to state 7
+    expression                     shift and go to state 35
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+
+state 45
+
+    (1) program -> expression NEWLINE program .
+
+    $end            reduce using rule 1 (program -> expression NEWLINE program .)
+
+
+
+state 46
+
+    (5) statement_to -> TO NAME to_args NEWLINE . expression NEWLINE END
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    expression                     shift and go to state 50
+
+state 47
+
+    (9) var_spec -> QUOTE NAME .
+
+    COLON           reduce using rule 9 (var_spec -> QUOTE NAME .)
+    QUOTE           reduce using rule 9 (var_spec -> QUOTE NAME .)
+    NAME            reduce using rule 9 (var_spec -> QUOTE NAME .)
+    NEWLINE         reduce using rule 9 (var_spec -> QUOTE NAME .)
+
+
+
+state 48
+
+    (8) var_spec -> COLON NAME .
+
+    COLON           reduce using rule 8 (var_spec -> COLON NAME .)
+    QUOTE           reduce using rule 8 (var_spec -> COLON NAME .)
+    NAME            reduce using rule 8 (var_spec -> COLON NAME .)
+    NEWLINE         reduce using rule 8 (var_spec -> COLON NAME .)
+
+
+
+state 49
+
+    (6) to_args -> var_spec to_args .
+
+    NEWLINE         reduce using rule 6 (to_args -> var_spec to_args .)
+
+
+
+state 50
+
+    (5) statement_to -> TO NAME to_args NEWLINE expression . NEWLINE END
+    (11) expression -> expression . expression
+    (13) expression -> expression . operator expression
+    (11) expression -> . expression expression
+    (12) expression -> . NAME expression
+    (13) expression -> . expression operator expression
+    (14) expression -> . LPAREN expression RPAREN
+    (15) expression -> . LBRACKET expression RBRACKET
+    (16) expression -> . value
+    (17) expression -> . variable
+    (24) operator -> . PLUS
+    (25) operator -> . MINUS
+    (26) operator -> . TIMES
+    (27) operator -> . DIVIDE
+    (28) operator -> . GREATER_EQUAL
+    (29) operator -> . LESS_EQUAL
+    (30) operator -> . GREATER
+    (31) operator -> . LESS
+    (32) operator -> . NOT_EQUAL
+    (33) operator -> . EQUAL
+    (18) value -> . string
+    (19) value -> . NUMBER
+    (23) variable -> . COLON NAME
+    (20) string -> . QUOTE NAME
+    (21) string -> . QUOTE TO
+    (22) string -> . QUOTE END
+
+    NEWLINE         shift and go to state 51
+    NAME            shift and go to state 1
+    LPAREN          shift and go to state 11
+    LBRACKET        shift and go to state 6
+    PLUS            shift and go to state 31
+    MINUS           shift and go to state 26
+    TIMES           shift and go to state 32
+    DIVIDE          shift and go to state 27
+    GREATER_EQUAL   shift and go to state 29
+    LESS_EQUAL      shift and go to state 33
+    GREATER         shift and go to state 34
+    LESS            shift and go to state 23
+    NOT_EQUAL       shift and go to state 28
+    EQUAL           shift and go to state 24
+    NUMBER          shift and go to state 4
+    COLON           shift and go to state 9
+    QUOTE           shift and go to state 3
+
+
+    string                         shift and go to state 13
+    value                          shift and go to state 5
+    variable                       shift and go to state 7
+    operator                       shift and go to state 25
+    expression                     shift and go to state 35
+
+state 51
+
+    (5) statement_to -> TO NAME to_args NEWLINE expression NEWLINE . END
+
+    END             shift and go to state 52
+
+
+
+state 52
+
+    (5) statement_to -> TO NAME to_args NEWLINE expression NEWLINE END .
+
+    NEWLINE         reduce using rule 5 (statement_to -> TO NAME to_args NEWLINE expression NEWLINE END .)
+    $end            reduce using rule 5 (statement_to -> TO NAME to_args NEWLINE expression NEWLINE END .)
+
+

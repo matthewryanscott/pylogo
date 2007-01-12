@@ -1,0 +1,45 @@
+Some tests:
+
+    >>> from pylogo.parser import lexer, parser
+    >>> def lexit(s):
+    ...     lexer.input(s)
+    ...     while 1:
+    ...         tok = lexer.token()
+    ...         if not tok: break
+    ...         print tok.type, repr(tok.value)
+    >>> lexit('1')
+    NUMBER 1
+    >>> lexit('[1 + 2]')
+    LBRACKET '['
+    NUMBER 1
+    PLUS '+'
+    NUMBER 2
+    RBRACKET ']'
+    >>> lexit('fd 1 rt 90\nfd 100 square 10')
+    NAME 'fd'
+    NUMBER 1
+    NAME 'rt'
+    NUMBER 90
+    NEWLINE '\n'
+    NAME 'fd'
+    NUMBER 100
+    NAME 'square'
+    NUMBER 10
+
+Now of the parser:
+
+    >>> from pylogo.structs import logorepr
+    >>> def parseit(s):
+    ...     exprs = parser.parse(s, debug=True)
+    ...     for line in exprs:
+    ...         print repr(line)
+    ...         print logorepr(line)
+    >>> parseit('1')
+    1
+    >>> parseit('[1 + 2]')
+    [1 + 2]
+    >>> parseit('1 + \n2')
+    Syntax error at '\n'
+    2
+    >>> parseit('fd 1 rt 90\nfd 100 square 10')
+    
