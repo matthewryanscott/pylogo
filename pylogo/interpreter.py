@@ -265,7 +265,8 @@ class Interpreter(object):
                 else:
                     self.tokenizer.next()
                 if self.special_forms.has_key(func.lower()):
-                    val = self.special_forms[func.lower()](self, greedy=True)
+                    special_form = self.special_forms[func.lower()]
+                    val = special_form(self, greedy=True)
                     next_tok = self.tokenizer.next()
                     if next_tok != ')':
                         raise LogoSyntaxError("')' expected")
@@ -293,7 +294,8 @@ class Interpreter(object):
             if not reader.is_word(tok):
                 raise LogoSyntaxError("Unknown token: %r" % tok)
             if tok.lower() in self.special_forms:
-                val = self.special_forms[tok.lower()](self, greedy=False)
+                special_form = self.special_forms[tok.lower()]
+                val = special_form(self, greedy=False)
                 return val
             else:
                 func_name = tok
