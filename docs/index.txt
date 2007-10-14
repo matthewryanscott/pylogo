@@ -5,6 +5,9 @@ PyLogo
 News
 ----
 
+14 Oct 2007
+    0.4 version released
+
 21 Aug 2006:
     0.3 version released
 
