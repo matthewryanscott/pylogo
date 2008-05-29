@@ -562,5 +562,4 @@ list isn't very up-to-date):
 .. _`Logo nyelv`: http://logonyelv.sourceforge.net/index-en.html
 .. _Tortue: http://tortue.sourceforge.net/
 .. _XLogo: http://xlogo.sourceforge.net/
-.. _aUCBLogo: http://www.student.uni-augsburg.de/~micheler/
 
