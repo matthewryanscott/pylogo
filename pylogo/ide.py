@@ -202,6 +202,7 @@ def get_canvas():
     return TheApp.canvas
 
 def main():
+def main(filenames=[]):
     import sys
     from pylogo import logo_turtle
     global TheApp
@@ -213,6 +214,10 @@ def main():
     logo_turtle.createturtle(interpreter.Logo)
     #logo_turtle.logo_turtle_main(interpreter.Logo)
     #logo_turtle._newmainturtle(interpreter.Logo)
+
+
+    for filename in filenames:
+        interpreter.Logo.import_logo(filename)
     
     comm.start()
     

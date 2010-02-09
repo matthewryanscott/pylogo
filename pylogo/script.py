@@ -41,12 +41,12 @@ def doit(args):
                      verbose_summary=True,
                      interp=Logo)
     else:
-        for fn in filenames:
-            Logo.import_logo(filename)
         if options.quit_after:
             return
         if options.console:
+            for filename in filenames:
+                Logo.import_logo(filename)
             Logo.input_loop(sys.stdin, sys.stdout)
         else:
             from pylogo import ide
-            ide.main()
+            ide.main(filenames)
