@@ -1932,11 +1932,14 @@ def values(d):
 def items(d):
     return d.items()
 
-@logofunc(aware=True)
+@logofunc(aware=True,arity=-1)
 def call(interp, func, *args):
     if isinstance(func, str):
         func = interp.get_function(func)
-    return func(*args)
+    if getattr(func,'logo_aware',False):
+        return func(interp,*args)
+    else:
+        return func(*args)
 
 @logofunc(name='new', aware=True)
 def logo_new(interp, cls):
