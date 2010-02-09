@@ -130,6 +130,14 @@ class Turtle:
         add_command(self.pen.goto, 0, 0)
         add_command(get_canvas().update)
 
+    @logofunc(arity=1)
+    def speed(self, x):
+        add_command(self.pen.speed,x)
+        
+    @logofunc(arity=1)
+    def delay(self, x):
+        add_command(self.pen.delay,x)
+
     @logofunc(aliases=['cs', 'clearscreen'])
     def clear(self):
         self.home()
