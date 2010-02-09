@@ -1438,11 +1438,13 @@ def repeat(interp, n, block):
 
     command.  Runs the ``instructionlist`` repeatedly, ``num`` times.
     """
+    if n <= 0:
+        return None
     lastVal = None
     if hasattr(interp, '_repcount'):
         lastrepcount = interp._repcount
     try:
-        for i in xrange(n):
+        for i in xrange(int(n)):
             interp._repcount = i+1
             try:
                 lastVal = interp.eval(block)
