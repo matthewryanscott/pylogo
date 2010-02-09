@@ -52,7 +52,7 @@ class Turtle:
     def pendown(self):
         add_command(self.pen.down)
 
-    @logofunc(aware=True)
+    @logofunc(aliases=['pw'],arity=1)
     def penwidth(self, v):
         add_command(self.pen.width, v)
 
