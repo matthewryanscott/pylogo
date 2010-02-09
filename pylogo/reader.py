@@ -29,7 +29,12 @@ import re
 import sys
 from pylogo.common import *
 # Just importing this enables readline when doing raw_input:
-import readline
+try:
+    from os import isatty
+    if isatty(1):
+        import readline
+except ImportError:
+    import readline
 
 word_matcher = r'[a-zA-Z\._\?!][a-zA-Z0-9\._\?!]*'
 word_re = re.compile(word_matcher)
