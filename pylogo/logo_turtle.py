@@ -104,15 +104,13 @@ class Turtle:
 
     @logofunc()
     def setx(self, x):
-        t = self.pen
-        add_command(t.goto, x, t.position()[1])
+        add_command(self.pen.setx,x)
         add_command(get_canvas().update)
         add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def sety(self, y):
-        t = self.pen
-        add_command(t.goto, t.position()[0], y)
+        add_command(self.pen.sety, y)
         add_command(get_canvas().update)
         add_command(get_scroller().resizescrollregion)
 
