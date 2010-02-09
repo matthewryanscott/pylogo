@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<!-- This file provides syntax highlighting information for jEdit. -->
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<MODE>
+	<PROPS>
+		<PROPERTY NAME="lineComment" VALUE=";" />
+		<PROPERTY NAME="noWordSep" VALUE="_-+?:" />
+		<PROPERTY NAME="indentOpenBrackets" VALUE="[" />
+		<PROPERTY NAME="indentCloseBrackets" VALUE="]" />
+		<PROPERTY NAME="unalignedOpenBrackets" VALUE="(" />
+		<PROPERTY NAME="unalignedCloseBrackets" VALUE=")" />
+		<PROPERTY NAME="lineUpClosingBracket" VALUE="false" />
+	</PROPS>
+
+	<RULES IGNORE_CASE="TRUE"
+		HIGHLIGHT_DIGITS="TRUE"
+		ESCAPE="\"
+		NO_WORD_SEP="_-+?:"
+	>
+
+		<MARK_FOLLOWING AT_WORD_START="TRUE" TYPE="LITERAL3">:</MARK_FOLLOWING>
+		<MARK_FOLLOWING AT_WORD_START="TRUE" TYPE="LITERAL1">&quot;</MARK_FOLLOWING>
+
+		<SEQ TYPE="LITERAL4">0</SEQ>
+		<SEQ TYPE="LITERAL4">1</SEQ>
+		<SEQ TYPE="LITERAL4">2</SEQ>
+		<SEQ TYPE="LITERAL4">3</SEQ>
+		<SEQ TYPE="LITERAL4">4</SEQ>
+		<SEQ TYPE="LITERAL4">5</SEQ>
+		<SEQ TYPE="LITERAL4">6</SEQ>
+		<SEQ TYPE="LITERAL4">7</SEQ>
+		<SEQ TYPE="LITERAL4">8</SEQ>
+		<SEQ TYPE="LITERAL4">9</SEQ>
+		<SEQ TYPE="LITERAL4">.</SEQ>
+
+		<SEQ TYPE="OPERATOR">[</SEQ>
+		<SEQ TYPE="OPERATOR">]</SEQ>
+
+		<!--
+		Based on convention discussed here:
+			http://www.gigamonkeys.com/book/syntax-and-semantics.html
+		-->
+		<EOL_SPAN TYPE="COMMENT4">;;;;</EOL_SPAN>
+		<EOL_SPAN TYPE="COMMENT3">;;;</EOL_SPAN>
+		<EOL_SPAN TYPE="COMMENT2">;;</EOL_SPAN>
+		<EOL_SPAN TYPE="COMMENT1">;</EOL_SPAN>
+
+		<!--
+			keywords from j
+				(http://armedbear-j.sourceforge.net/)
+                        Duplicates removed; KEYWORD1 and KEYWORD2 
+                          better aligned with Emacs Lisp mode
+                        Missing Common Lisp symbols added; now 970 symbols total
+                        2004-01-22  dsh
+		-->
+		<KEYWORDS>
+			<KEYWORD1>to</KEYWORD1>
+			<KEYWORD1>end</KEYWORD1>
+
+			<KEYWORD2>repeat</KEYWORD2>
+			<KEYWORD2>iftrue</KEYWORD2>
+			<KEYWORD2>ift</KEYWORD2>
+			<KEYWORD2>iffalse</KEYWORD2>
+			<KEYWORD2>iff</KEYWORD2>
+			<KEYWORD2>test</KEYWORD2>
+			<KEYWORD2>output</KEYWORD2>
+			<KEYWORD2>define</KEYWORD2>
+			<KEYWORD2>make</KEYWORD2>
+			<KEYWORD2>name</KEYWORD2>
+			<KEYWORD2>local</KEYWORD2>
+			<KEYWORD2>localmake</KEYWORD2>
+			<KEYWORD2>thing</KEYWORD2>
+			<KEYWORD2>global</KEYWORD2>
+			<KEYWORD2>load</KEYWORD2>
+
+			<KEYWORD3>call</KEYWORD3>
+			<KEYWORD3>sum</KEYWORD3>
+			<KEYWORD3>difference</KEYWORD3>
+			<KEYWORD3>minus</KEYWORD3>
+			<KEYWORD3>product</KEYWORD3>
+			<KEYWORD3>quotient</KEYWORD3>
+			<KEYWORD3>remainder</KEYWORD3>
+			<KEYWORD3>modulo</KEYWORD3>
+			<KEYWORD3>int</KEYWORD3>
+			<KEYWORD3>round</KEYWORD3>
+			<KEYWORD3>sqrt</KEYWORD3>
+			<KEYWORD3>power</KEYWORD3>
+			<KEYWORD3>exp</KEYWORD3>
+			<KEYWORD3>log10</KEYWORD3>
+			<KEYWORD3>ln</KEYWORD3>
+			<KEYWORD3>sin</KEYWORD3>
+			<KEYWORD3>radsin</KEYWORD3>
+			<KEYWORD3>cos</KEYWORD3>
+			<KEYWORD3>radcos</KEYWORD3>
+			<KEYWORD3>arctan</KEYWORD3>
+			<KEYWORD3>radarctan</KEYWORD3>
+			<KEYWORD3>lessp</KEYWORD3>
+			<KEYWORD3>less?</KEYWORD3>
+			<KEYWORD3>greaterp</KEYWORD3>
+			<KEYWORD3>greater?</KEYWORD3>
+			<KEYWORD3>lessequalp</KEYWORD3>
+			<KEYWORD2>lessequal?</KEYWORD3>
+			<KEYWORD3>greaterequalp</KEYWORD3>
+			<KEYWORD3>greaterequal?</KEYWORD3>
+			<KEYWORD3>equal?</KEYWORD3>
+			<KEYWORD3>equalp</KEYWORD3>
+			<KEYWORD3>bitand</KEYWORD3>
+			<KEYWORD3>bitor</KEYWORD3>
+			<KEYWORD3>bitxor</KEYWORD3>
+			<KEYWORD3>bitnot</KEYWORD3>
+			<KEYWORD3>ashift</KEYWORD3>
+			<KEYWORD3>lshift</KEYWORD3>
+			<KEYWORD3>and</KEYWORD3>
+			<KEYWORD3>or</KEYWORD3>
+			<KEYWORD3>not</KEYWORD3>
+			<KEYWORD3>list</KEYWORD3>
+
+
+			<KEYWORD4>forward</KEYWORD4>
+			<KEYWORD4>fd</KEYWORD4>
+			<KEYWORD4>back</KEYWORD4>
+			<KEYWORD4>bk</KEYWORD4>
+			<KEYWORD4>left</KEYWORD4>
+			<KEYWORD4>lt</KEYWORD4>
+			<KEYWORD4>right</KEYWORD4>
+			<KEYWORD4>rt</KEYWORD4>
+			<KEYWORD4>setpos</KEYWORD4>
+			<KEYWORD4>setxy</KEYWORD4>
+			<KEYWORD4>setx</KEYWORD4>
+			<KEYWORD4>sety</KEYWORD4>
+			<KEYWORD4>setheading</KEYWORD4>
+			<KEYWORD4>seth</KEYWORD4>
+			<KEYWORD4>home</KEYWORD4>
+			<KEYWORD4>arc</KEYWORD4>
+			<KEYWORD4>pos</KEYWORD4>
+			<KEYWORD4>xcor</KEYWORD4>
+			<KEYWORD4>ycor</KEYWORD4>
+			<KEYWORD4>heading</KEYWORD4>
+			<KEYWORD4>towards</KEYWORD4>
+			<KEYWORD4>scrunch</KEYWORD4>
+			<KEYWORD4>showturtle</KEYWORD4>
+			<KEYWORD4>st</KEYWORD4>
+			<KEYWORD4>hideturtle</KEYWORD4>
+			<KEYWORD4>ht</KEYWORD4>
+			<KEYWORD4>clean</KEYWORD4>
+			<KEYWORD4>clearscreen</KEYWORD4>
+			<KEYWORD4>cs</KEYWORD4>
+			<KEYWORD4>wrap</KEYWORD4>
+			<KEYWORD4>window</KEYWORD4>
+			<KEYWORD4>fence</KEYWORD4>
+			<KEYWORD4>fill</KEYWORD4>
+			<KEYWORD4>label</KEYWORD4>
+			<KEYWORD4>setlabelheight</KEYWORD4>
+			<KEYWORD4>textscreen</KEYWORD4>
+			<KEYWORD4>ts</KEYWORD4>
+			<KEYWORD4>fullscreen</KEYWORD4>
+			<KEYWORD4>fs</KEYWORD4>
+			<KEYWORD4>splitscren</KEYWORD4>
+			<KEYWORD4>ss</KEYWORD4>
+			<KEYWORD4>setscrunch</KEYWORD4>
+			<KEYWORD4>refreash</KEYWORD4>
+			<KEYWORD4>norefreash</KEYWORD4>
+			<KEYWORD4>pendown</KEYWORD4>
+			<KEYWORD4>pd</KEYWORD4>
+			<KEYWORD4>penup</KEYWORD4>
+			<KEYWORD4>pu</KEYWORD4>
+			<KEYWORD4>penpaint</KEYWORD4>
+			<KEYWORD4>ppt</KEYWORD4>
+			<KEYWORD4>penerase</KEYWORD4>
+			<KEYWORD4>pe</KEYWORD4>
+			<KEYWORD4>penreverse</KEYWORD4>
+			<KEYWORD4>px</KEYWORD4>
+			<KEYWORD4>setpencolor</KEYWORD4>
+			<KEYWORD4>setpc</KEYWORD4>
+			<KEYWORD4>setpalette</KEYWORD4>
+			<KEYWORD4>setpensize</KEYWORD4>
+			<KEYWORD4>setpenpattern</KEYWORD4>
+			<KEYWORD4>setpen</KEYWORD4>
+			<KEYWORD4>setbackground</KEYWORD4>
+			<KEYWORD4>setbg</KEYWORD4>
+			<KEYWORD4>pc</KEYWORD4>
+			<KEYWORD4>pencolor</KEYWORD4>
+			<KEYWORD4>pc3</KEYWORD4>
+			<KEYWORD4>pencolor3</KEYWORD4>
+			<KEYWORD4>color</KEYWORD4>
+			<KEYWORD4>color3</KEYWORD4>
+			<KEYWORD4>startfill</KEYWORD4>
+			<KEYWORD4>endfill</KEYWORD4>
+			<KEYWORD4>fill</KEYWORD4>
+			<KEYWORD4>penwidth</KEYWORD4>
+			<KEYWORD4>pw</KEYWORD4>
+
+<!--
+			<KEYWORD4>word</KEYWORD4>
+			<KEYWORD4>list</KEYWORD4>
+			<KEYWORD4>sentence</KEYWORD4>
+			<KEYWORD4>fput</KEYWORD4>
+			<KEYWORD4>lput</KEYWORD4>
+			<KEYWORD4>array</KEYWORD4>
+			<KEYWORD4>mdarray</KEYWORD4>
+			<KEYWORD4>listtoarray</KEYWORD4>
+			<KEYWORD4>arraytolist</KEYWORD4>
+			<KEYWORD4>combine</KEYWORD4>
+			<KEYWORD4>reverse</KEYWORD4>
+			<KEYWORD4>gensym</KEYWORD4>
+			<KEYWORD4>first</KEYWORD4>
+			<KEYWORD4>firsts</KEYWORD4>
+			<KEYWORD4>last</KEYWORD4>
+			<KEYWORD4>butfirst</KEYWORD4>
+			<KEYWORD4>bf</KEYWORD4>
+			<KEYWORD4>butfirsts</KEYWORD4>
+			<KEYWORD4>bfs</KEYWORD4>
+			<KEYWORD4>butlast</KEYWORD4>
+			<KEYWORD4>bl</KEYWORD4>
+			<KEYWORD4>item</KEYWORD4>
+			<KEYWORD4>mditem</KEYWORD4>
+			<KEYWORD4>pick</KEYWORD4>
+			<KEYWORD4>remove</KEYWORD4>
+			<KEYWORD4>remdup</KEYWORD4>
+			<KEYWORD4>quoted</KEYWORD4>
+			<KEYWORD4>setitem</KEYWORD4>
+			<KEYWORD4>mdsetitem</KEYWORD4>
+			<KEYWORD4>setfirst</KEYWORD4>
+			<KEYWORD4>setbf</KEYWORD4>
+			<KEYWORD4>setitem</KEYWORD4>
+			<KEYWORD4>push</KEYWORD4>
+			<KEYWORD4>pop</KEYWORD4>
+			<KEYWORD4>queue</KEYWORD4>
+			<KEYWORD4>dequeue</KEYWORD4>
+
+			<KEYWORD4>iseq</KEYWORD4>
+			<KEYWORD4>rseq</KEYWORD4>
+-->
+			<LITERAL2>true</LITERAL2>
+			<LITERAL2>false</LITERAL2>
+		</KEYWORDS>
+
+	</RULES>
+</MODE>
+
