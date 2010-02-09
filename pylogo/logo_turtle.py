@@ -61,6 +61,10 @@ class Turtle:
     def pencolor(self, *args):
         add_command(self.pen.color, *args)
 
+    @logofunc(aliases=['pc3', 'color3'],
+              arity=3)
+    def pencolor3(self, *args):
+        add_command(self.pen.color, *args)
     @logofunc(aliases=['ht'])
     def hideturtle(self):
         add_command(self.pen.tracer, 0)
