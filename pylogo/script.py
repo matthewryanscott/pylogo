@@ -50,3 +50,6 @@ def doit(args):
         else:
             from pylogo import ide
             ide.main(filenames)
+
+if __name__ == "__main__":
+    main()
