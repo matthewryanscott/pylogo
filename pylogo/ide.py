@@ -201,7 +201,9 @@ def add_command(command, *args, **kw):
 def get_canvas():
     return TheApp.canvas
 
-def main():
+def get_scroller():
+    return TheApp.scroller
+
 def main(filenames=[]):
     import sys
     from pylogo import logo_turtle

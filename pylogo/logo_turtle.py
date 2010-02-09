@@ -5,7 +5,7 @@ import threading
 import sys
 
 from common import *
-from ide import add_command, get_canvas
+from ide import add_command, get_canvas, get_scroller
 
 class Turtle:
 
@@ -31,10 +31,13 @@ class Turtle:
     def forward(self, v):
         add_command(self.pen.forward, v)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc(aliases=['back', 'bk'])
     def backward(self, v):
-        add_command(self.pen.backward, v).add_command(get_canvas().update)
+        add_command(self.pen.backward,v)
+        add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc(aliases=['lt'])
     def left(self, v):
@@ -81,6 +84,7 @@ class Turtle:
             text = str(text)
         add_command(self.pen.write, text, move)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def startfill(self):
@@ -90,23 +94,27 @@ class Turtle:
     def endfill(self):
         add_command(self.pen.fill, 0)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def setxy(self, x, y):
         add_command(self.pen.goto, x, y)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def setx(self, x):
         t = self.pen
         add_command(t.goto, x, t.position()[1])
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def sety(self, y):
         t = self.pen
         add_command(t.goto, t.position()[0], y)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc()
     def posx(self):
@@ -129,6 +137,7 @@ class Turtle:
         add_command(self.pen.setheading, 0)
         add_command(self.pen.goto, 0, 0)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc(arity=1)
     def speed(self, x):
@@ -143,6 +152,7 @@ class Turtle:
         self.home()
         add_command(self.pen.clear)
         add_command(get_canvas().update)
+        add_command(get_scroller().resizescrollregion)
 
     @logofunc(arity=1)
     def distance(self, other, orig=None):
